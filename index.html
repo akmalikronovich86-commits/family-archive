@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Семейный Архив — TMA Full</title>
+<title>Семейный Архив</title>
 <style>
 :root {
   --color-primary: #2AABEE;
@@ -53,12 +53,6 @@
   --text-tertiary: #8e8e93; --border-color: #3a3a3c; --border-light: #2c2c2e;
   --overlay: rgba(0,0,0,0.7); --shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
-.android {
-  --status-bar-height: 24px; --notch-width: 0; --notch-height: 0;
-  --phone-border-radius: 20px; --phone-border: 8px;
-  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
-  --radius-xl: 12px; --radius-2xl: 16px;
-}
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent;
   -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
 input,textarea { -webkit-user-select:text; user-select:text; }
@@ -77,9 +71,6 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 .status-bar::before { content:''; position:absolute; top:10px; left:50%;
   transform:translateX(-50%); width:var(--notch-width); height:var(--notch-height);
   background:#111; border-radius:var(--radius-full); }
-.android .status-bar { padding:0 var(--space-4); font-size:var(--font-size-sm); }
-.android .status-bar::before { display:none; }
-.android .status-bar .android-icons { display:flex; gap:var(--space-2); align-items:center; }
 .screen { display:none; flex-direction:column; height:calc(100% - var(--status-bar-height));
   background:var(--bg-secondary); overflow-y:auto; }
 .screen.active { display:flex; }
@@ -236,7 +227,6 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   backdrop-filter:blur(10px); transition:transform .4s ease; pointer-events:none; white-space:nowrap; }
 .protection-toast.show { transform:translateX(-50%) translateY(0); }
 .protection-toast.alert { background:rgba(255,59,48,0.9); }
-/* ===== 🚨 АЛЕРТЫ ===== */
 .alerts-summary { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-2); padding:var(--space-3); }
 .alert-stat { background:var(--bg-elevated); padding:var(--space-4); border-radius:var(--radius-md); text-align:center; }
 .alert-stat .num { font-size:var(--font-size-2xl); font-weight:var(--font-weight-bold); }
@@ -257,7 +247,6 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 .alert-actions { display:flex; gap:var(--space-2); margin-top:var(--space-2); }
 .alert-actions button { padding:4px 10px; border:none; border-radius:var(--radius-sm);
   font-size:var(--font-size-xs); cursor:pointer; font-weight:var(--font-weight-semibold); }
-/* ===== 📈 СТАТИСТИКА ===== */
 .stats-hero { background:linear-gradient(135deg,var(--color-primary),var(--color-vip));
   padding:var(--space-5) var(--space-4); margin:var(--space-3); border-radius:var(--radius-xl); color:#fff; }
 .stats-hero h3 { font-size:var(--font-size-lg); margin-bottom:var(--space-3); }
@@ -295,14 +284,12 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 .stat-album-info .name { font-size:var(--font-size-md); font-weight:var(--font-weight-semibold); color:var(--text-primary); }
 .stat-album-info .detail { font-size:var(--font-size-xs); color:var(--text-tertiary); }
 .stat-album-views { font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--color-primary); }
-/* Bar chart */
 .bar-chart { display:flex; align-items:flex-end; gap:var(--space-2); height:100px; padding:var(--space-2) 0; }
 .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
 .bar { width:100%; border-radius:4px 4px 0 0; background:linear-gradient(to top,var(--color-primary),var(--color-vip));
   min-height:4px; transition:height .5s ease; }
 .bar-label { font-size:9px; color:var(--text-tertiary); }
 .bar-value { font-size:9px; color:var(--text-primary); font-weight:var(--font-weight-semibold); }
-/* Logs */
 .logs-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-2); padding:var(--space-3); }
 .log-stat-card { background:var(--bg-elevated); padding:var(--space-4) var(--space-3);
   border-radius:var(--radius-md); text-align:center; }
@@ -346,7 +333,6 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 .top-photo-info .name { font-size:var(--font-size-sm); font-weight:var(--font-weight-semibold); color:var(--text-primary); }
 .top-photo-info .album { font-size:var(--font-size-xs); color:var(--text-tertiary); }
 .top-photo-views { font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--color-primary); }
-/* Profile */
 .profile-header { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
   padding:var(--space-8) var(--space-5); text-align:center; color:#fff; }
 .profile-header.vip { background:linear-gradient(135deg,var(--color-vip),var(--color-vip-dark)); }
@@ -448,13 +434,6 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 .loading-progress-bar { height:100%; background:#fff; width:0%; animation:progress 3s ease-out forwards; }
 @keyframes progress { to{width:100%} }
 .loading-status { font-size:var(--font-size-sm); opacity:0.8; }
-.empty-state { flex:1; display:flex; flex-direction:column; align-items:center;
-  justify-content:center; padding:var(--space-8); text-align:center; }
-.empty-icon { font-size:80px; margin-bottom:var(--space-5); opacity:0.5; }
-.empty-title { font-size:var(--font-size-xl); font-weight:var(--font-weight-semibold);
-  margin-bottom:var(--space-2); color:var(--text-primary); }
-.empty-text { font-size:var(--font-size-md); color:var(--text-tertiary);
-  margin-bottom:var(--space-6); max-width:280px; line-height:1.5; }
 .donations-summary { background:linear-gradient(135deg,var(--color-accent),var(--color-accent-dark));
   padding:var(--space-6) var(--space-4); margin:var(--space-3); border-radius:var(--radius-xl);
   color:#fff; text-align:center; }
@@ -526,60 +505,9 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   padding:var(--space-3) var(--space-4); margin-bottom:var(--space-4); font-size:var(--font-size-sm); }
 .perks h4 { font-size:var(--font-size-sm); margin-bottom:var(--space-2); color:var(--text-primary); }
 .perks li { margin-left:var(--space-4); margin-bottom:3px; color:var(--text-secondary); }
-.demo-nav { position:fixed; top:20px; right:20px; background:rgba(0,0,0,0.85); color:#fff;
-  padding:var(--space-4); border-radius:var(--radius-md); font-size:var(--font-size-sm);
-  max-width:260px; z-index:1000; max-height:90vh; overflow-y:auto; backdrop-filter:blur(10px); }
-.demo-nav h4 { margin-bottom:var(--space-3); font-size:var(--font-size-md); }
-.demo-nav .section-title { font-size:var(--font-size-xs); color:#8e8e93;
-  text-transform:uppercase; margin:var(--space-3) 0 var(--space-2); font-weight:var(--font-weight-semibold); }
-.demo-nav button { display:block; width:100%; padding:6px 10px; margin-bottom:4px;
-  background:var(--color-primary); color:#fff; border:none; border-radius:6px;
-  cursor:pointer; font-size:var(--font-size-sm); text-align:left; font-family:var(--font-family); }
-.demo-nav button:hover { background:var(--color-primary-dark); }
-.demo-nav .toggle-row { display:flex; justify-content:space-between;
-  align-items:center; padding:6px 0; font-size:var(--font-size-sm); }
-.demo-nav .toggle-row button { width:auto; padding:4px 10px; margin:0; }
-.role-indicator { display:inline-flex; align-items:center; gap:4px; padding:3px 8px;
-  border-radius:12px; font-size:var(--font-size-xs); font-weight:var(--font-weight-semibold); }
-.role-indicator.guest { background:rgba(142,142,147,0.2); color:var(--text-tertiary); }
-.role-indicator.vip { background:linear-gradient(135deg,var(--color-vip),var(--color-vip-dark)); color:#fff; }
-.protection-info { background:rgba(52,199,89,0.15); border:1px solid var(--color-success);
-  border-radius:var(--radius-sm); padding:var(--space-3); margin-top:var(--space-3);
-  font-size:var(--font-size-xs); color:var(--color-success); line-height:1.4; }
-.new-features-info { background:rgba(175,82,222,0.15); border:1px solid var(--color-vip);
-  border-radius:var(--radius-sm); padding:var(--space-3); margin-top:var(--space-2);
-  font-size:var(--font-size-xs); color:var(--color-vip); line-height:1.4; }
 </style>
 </head>
 <body>
-<div class="demo-nav">
-  <h4>📱 Семейный Архив 🔒</h4>
-  <div class="section-title">🎨 Тема / Платформа</div>
-  <div class="toggle-row"><span>🌙 Dark</span><button onclick="toggleTheme()" id="themeBtn">Вкл</button></div>
-  <div class="toggle-row"><span>🤖 Android</span><button onclick="togglePlatform()" id="platformBtn">Вкл</button></div>
-  <div class="section-title">👤 Роль</div>
-  <div class="toggle-row"><span>👑 VIP</span><button onclick="toggleRole()" id="roleBtn">Вкл</button></div>
-  <div style="padding:4px 0;font-size:var(--font-size-xs);color:#8e8e93;">
-    Роль: <span id="currentRole" class="role-indicator guest">👤 Гость</span>
-  </div>
-  <div class="section-title">⚡ Тест аномалии</div>
-  <button onclick="simulateAnomaly()" style="background:var(--color-danger);">🚨 Симулировать спам</button>
-  <div class="section-title">🖥️ Экраны</div>
-  <button onclick="showScreen('loading')">🔄 Загрузка</button>
-  <button onclick="showScreen('home')">🏠 Главная</button>
-  <button onclick="showScreen('album')">📷 Альбом</button>
-  <button onclick="showScreen('viewer')">🔍 Просмотр</button>
-  <button onclick="showScreen('chat')">💬 Чат</button>
-  <button onclick="showScreen('donations')">💰 Донаты</button>
-  <button onclick="showScreen('logs')">📋 Логи</button>
-  <button onclick="showScreen('alerts')">🚨 Алерты</button>
-  <button onclick="showScreen('stats')">📈 Статистика</button>
-  <button onclick="showScreen('profile')">👤 Профиль</button>
-  <button onclick="showScreen('admin')">⚙️ Админка</button>
-  <button onclick="showScreen('create')">➕ Новый альбом</button>
-  <div class="protection-info">🔒 Canvas + Watermark + Logs + Anomaly Detection</div>
-</div>
-
 <div class="phone-frame">
   <div class="protection-toast" id="protectionToast">🔒 Фото защищены</div>
   <div class="consent-overlay hidden" id="consentOverlay">
@@ -601,8 +529,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   </div>
   <div class="status-bar">
     <span>9:41</span>
-    <span class="ios-icons">📶 📡 🔋</span>
-    <span class="android-icons" style="display:none;">📶 🔋 92%</span>
+    <span>📶 📡 🔋</span>
   </div>
 
   <!-- ЗАГРУЗКА -->
@@ -618,7 +545,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   </div>
 
   <!-- ГЛАВНАЯ -->
-  <div class="screen" id="home">
+  <div class="screen active" id="home">
     <div class="header">
       <h1>Семейный Архив</h1>
       <div class="icon-btn" onclick="showScreen('alerts')" id="alertsBtn">🚨<span class="alert-badge-count" id="alertCount" style="display:none;">0</span></div>
@@ -626,7 +553,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div class="icon-btn" onclick="showScreen('profile')">👤</div>
     </div>
     <div class="welcome">
-      <h2>Добро пожаловать, Иван! 👋</h2>
+      <h2>Добро пожаловать! 👋</h2>
       <p>24 альбома • 1 247 фото • 89 видео</p>
     </div>
     <div class="search-bar">🔍 Поиск по альбомам...</div>
@@ -652,10 +579,10 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <button class="back-btn" onclick="showScreen('home')">‹</button>
       <h1>Лето 2024</h1>
       <div class="protection-badge">🔒</div>
-      <div class="icon-btn" onclick="showScreen('chat')">💬</div>
+      <div class="icon-btn" onclick="showScreen('chat')"></div>
     </div>
     <div class="album-hero" style="background-image:url('https://picsum.photos/seed/summer/800/400')"><div class="album-hero-info"><h2>Лето 2024 • Сочи</h2><p>156 фото • 12 видео</p></div></div>
-    <div class="date-separator">📅 12 июля 2024</div>
+    <div class="date-separator"> 12 июля 2024</div>
     <div class="media-grid">
       <div class="media-item" style="background-image:url('https://picsum.photos/seed/p1/200')" onclick="openPhoto('photo_001','Пляж на закате')"></div>
       <div class="media-item" style="background-image:url('https://picsum.photos/seed/p2/200')" onclick="openPhoto('photo_002','Морские волны')"></div>
@@ -678,7 +605,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div class="viewer-header">
         <button onclick="showScreen('album')">✕</button>
         <div class="viewer-badges">
-          <div class="protection-badge" style="background:rgba(255,255,255,0.2);color:#fff;">🔒</div>
+          <div class="protection-badge" style="background:rgba(255,255,255,0.2);color:#fff;"></div>
           <div id="qualityBadge" class="quality-badge hd">📺 HD 1280px</div>
         </div>
         <button>⋮</button>
@@ -705,7 +632,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     </div>
   </div>
 
-  <!-- 🚨 АЛЕРТЫ -->
+  <!-- АЛЕРТЫ -->
   <div class="screen" id="alerts">
     <div class="header">
       <button class="back-btn" onclick="showScreen('home')">‹</button>
@@ -720,7 +647,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     <div class="alerts-list" id="alertsList"></div>
   </div>
 
-  <!-- 📈 СТАТИСТИКА -->
+  <!-- СТАТИСТИКА -->
   <div class="screen" id="stats">
     <div class="header">
       <button class="back-btn" onclick="showScreen('home')">‹</button>
@@ -736,7 +663,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       </div>
     </div>
     <div class="stats-section">
-      <h4>👑 Самые активные</h4>
+      <h4> Самые активные</h4>
       <div id="topUsersList"></div>
     </div>
     <div class="stats-section">
@@ -788,7 +715,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>История донатов</h1></div>
     <div class="donations-summary"><div class="total">⭐ 2 450</div><div class="label">Всего Stars</div></div>
     <div class="donations-list">
-      <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Мама</div><div class="date">Сегодня, 10:15</div></div><div class="donation-amount">+250 ⭐</div></div>
+      <div class="donation-item"><div class="donation-icon"></div><div class="donation-info"><div class="name">Мама</div><div class="date">Сегодня, 10:15</div></div><div class="donation-amount">+250 ⭐</div></div>
       <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Дедушка</div><div class="date">Вчера, 14:20</div></div><div class="donation-amount">+500 ⭐</div></div>
     </div>
     <div style="padding:0 var(--space-3) var(--space-5);"><button class="btn btn-donate" style="width:100%;" onclick="openDonate()">💝 Поддержать</button></div>
@@ -798,9 +725,9 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   <div class="screen" id="profile">
     <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>Профиль</h1></div>
     <div class="profile-header" id="profileHeader">
-      <div class="profile-avatar">И<div class="vip-crown" id="vipCrown" style="display:none;">👑</div></div>
-      <h2>Иван Иванов <span id="vipBadgeProfile" style="display:none;">👑</span></h2>
-      <p>@ivan_ivanov • с 01.01.2024</p>
+      <div class="profile-avatar">👤<div class="vip-crown" id="vipCrown" style="display:none;">👑</div></div>
+      <h2 id="profileName">Гость</h2>
+      <p id="profileUsername">@guest</p>
     </div>
     <div class="vip-card" id="vipCard"><div class="icon">👑</div><div class="info"><h4>Станьте VIP</h4><p>Оригинальное качество фото</p></div><button class="btn" onclick="openDonate()">Получить</button></div>
     <div class="stats-block"><div class="block-title">📊 Статистика</div>
@@ -809,7 +736,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     </div>
     <div class="settings-block"><div class="block-title">⚙️ Настройки</div>
       <div class="setting-row"><div class="left">🔔 Уведомления</div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-      <div class="setting-row"><div class="left">🌙 Тёмная тема</div><div class="toggle" onclick="this.classList.toggle('on');toggleTheme()"></div></div>
+      <div class="setting-row"><div class="left"> Тёмная тема</div><div class="toggle" onclick="this.classList.toggle('on');toggleTheme()"></div></div>
     </div>
     <div class="logout-btn">🚪 Выйти</div>
   </div>
@@ -834,7 +761,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     <div class="header"><button class="back-btn" onclick="showScreen('admin')">‹</button><h1>Новый альбом</h1></div>
     <div class="form-group"><label>Название</label><input type="text" placeholder="Лето 2025"></div>
     <div class="form-group"><label>Описание</label><textarea placeholder="О событии..."></textarea></div>
-    <div class="upload-area"><div class="icon">📷</div><div>Загрузить фото и видео</div></div>
+    <div class="upload-area"><div class="icon"></div><div>Загрузить фото и видео</div></div>
     <div class="form-actions"><button class="btn btn-primary">Создать</button><button class="btn btn-secondary" onclick="showScreen('admin')">Отмена</button></div>
   </div>
 
@@ -842,7 +769,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   <div class="modal-overlay" id="donateModal">
     <div class="modal">
       <div class="modal-handle"></div>
-      <h2>💝 Поддержка</h2>
+      <h2> Поддержка</h2>
       <p class="subtitle">Цените воспоминания!</p>
       <div class="amount-grid">
         <div class="amount-btn" onclick="selectAmount(this,50)"><div class="stars">⭐</div><div class="num">50</div></div>
@@ -850,7 +777,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
         <div class="amount-btn" onclick="selectAmount(this,250)"><div class="stars">⭐⭐⭐</div><div class="num">250</div></div>
         <div class="amount-btn" onclick="selectAmount(this,500)"><div class="stars">⭐⭐⭐⭐</div><div class="num">500</div></div>
       </div>
-      <div class="perks"><h4>💡 Бонусы:</h4><ul><li>👑 VIP и оригинальное качество</li><li>Ранний доступ к альбомам</li></ul></div>
+      <div class="perks"><h4>💡 Бонусы:</h4><ul><li> VIP и оригинальное качество</li><li>Ранний доступ к альбомам</li></ul></div>
       <button class="btn btn-donate" style="width:100%;margin-bottom:var(--space-2);">💳 Оплатить 100 Stars</button>
       <button class="btn btn-secondary" style="width:100%;" onclick="closeDonate()">Отмена</button>
     </div>
@@ -858,7 +785,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 </div>
 
 <script>
-const CURRENT_USER = { id:123456789, username:'ivan_ivanov', name:'Иван Иванов', role:'guest' };
+const CURRENT_USER = { id:123456789, username:'guest', name:'Гость', role:'guest' };
 let hasConsented = localStorage.getItem('fa_consent')==='true';
 let viewLogs = JSON.parse(localStorage.getItem('fa_logs')||'[]');
 let alerts = JSON.parse(localStorage.getItem('fa_alerts')||'[]');
@@ -875,52 +802,46 @@ const PHOTOS_DB = {
   'video_002':{title:'Купание',album:'Лето 2024',thumb:'https://picsum.photos/seed/v2/100'}
 };
 
-/* ===== 🚨 СИСТЕМА ОБНАРУЖЕНИЯ АНОМАЛИЙ ===== */
 const ANOMALY_THRESHOLDS = {
-  userPerMinute: 10,    // >10 просмотров/мин от одного юзера
-  userPerMinuteCritical: 30, // >30 = критическое
-  totalPerMinute: 50,   // >50 суммарно/мин
-  rapidPhotos: 5        // >5 разных фото за 10 сек
+  userPerMinute: 10,
+  userPerMinuteCritical: 30,
+  totalPerMinute: 50,
+  rapidPhotos: 5
 };
 
 function checkAnomaly(photoId) {
   const now = Date.now();
   const oneMinAgo = now - 60000;
   const tenSecAgo = now - 10000;
-
-  // Просмотры текущего юзера за минуту
   const userRecent = viewLogs.filter(l => l.userId === CURRENT_USER.id && l.timestamp > oneMinAgo);
   
   if (userRecent.length > ANOMALY_THRESHOLDS.userPerMinuteCritical) {
     createAlert('critical', '🔴 Критическая активность',
-      `@${CURRENT_USER.username} сделал ${userRecent.length} просмотров за минуту! Возможный парсинг/скрейпинг.`,
+      `@${CURRENT_USER.username} сделал ${userRecent.length} просмотров за минуту!`,
       CURRENT_USER.id, CURRENT_USER.name);
   } else if (userRecent.length > ANOMALY_THRESHOLDS.userPerMinute) {
     createAlert('warning', '🟡 Подозрительная активность',
-      `@${CURRENT_USER.username} — ${userRecent.length} просмотров за 60 сек. Порог: ${ANOMALY_THRESHOLDS.userPerMinute}.`,
+      `@${CURRENT_USER.username} — ${userRecent.length} просмотров за 60 сек.`,
       CURRENT_USER.id, CURRENT_USER.name);
   }
 
-  // Быстрое переключение фото (5+ за 10 сек)
   const rapidViews = userRecent.filter(l => l.timestamp > tenSecAgo);
   const uniquePhotos = new Set(rapidViews.map(l => l.photoId));
   if (uniquePhotos.size > ANOMALY_THRESHOLDS.rapidPhotos) {
     createAlert('critical', '🔴 Быстрое переключение фото',
-      `@${CURRENT_USER.username} открыл ${uniquePhotos.size} разных фото за 10 сек! Похоже на массовое скачивание.`,
+      `@${CURRENT_USER.username} открыл ${uniquePhotos.size} разных фото за 10 сек!`,
       CURRENT_USER.id, CURRENT_USER.name);
   }
 
-  // Общая нагрузка
   const totalRecent = viewLogs.filter(l => l.timestamp > oneMinAgo);
   if (totalRecent.length > ANOMALY_THRESHOLDS.totalPerMinute) {
     createAlert('warning', '🟡 Высокая нагрузка',
-      `Суммарно ${totalRecent.length} просмотров за минуту от всех пользователей.`,
+      `Суммарно ${totalRecent.length} просмотров за минуту.`,
       null, 'Система');
   }
 }
 
 function createAlert(level, title, desc, userId, userName) {
-  // Не дублировать одинаковые алерты за 30 сек
   const recent = alerts.filter(a => a.title === title && Date.now() - a.timestamp < 30000);
   if (recent.length > 0) return;
 
@@ -986,32 +907,11 @@ function clearAlerts() {
   }
 }
 
-function simulateAnomaly() {
-  // Симулируем 15 быстрых просмотров
-  for (let i = 0; i < 15; i++) {
-    const ids = Object.keys(PHOTOS_DB);
-    const pid = ids[i % ids.length];
-    viewLogs.unshift({
-      photoId: pid, photoTitle: PHOTOS_DB[pid].title, albumId: 'summer',
-      albumName: 'Лето 2024', thumb: PHOTOS_DB[pid].thumb,
-      userId: CURRENT_USER.id, userName: CURRENT_USER.name,
-      userUsername: CURRENT_USER.username, userRole: CURRENT_USER.role,
-      timestamp: Date.now() - (15 - i) * 500, // каждые 500мс
-      quality: 'hd'
-    });
-  }
-  localStorage.setItem('fa_logs', JSON.stringify(viewLogs));
-  checkAnomaly('photo_001');
-  showScreen('alerts');
-}
-
-/* ===== 📈 СЕМЕЙНАЯ СТАТИСТИКА ===== */
 function renderStats() {
   document.getElementById('statTotalViews').textContent = viewLogs.length;
   const users = new Set(viewLogs.map(l => l.userId));
   document.getElementById('statTotalUsers').textContent = users.size;
 
-  // Топ пользователей
   const userStats = {};
   viewLogs.forEach(l => {
     if (!userStats[l.userId]) userStats[l.userId] = { name: l.userName, username: l.userUsername, views: 0, role: l.userRole };
@@ -1025,7 +925,7 @@ function renderStats() {
     : topUsers.map((u, i) => {
       const rank = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
       const pct = Math.round(u.views / maxViews * 100);
-      const roleBadge = u.role === 'vip' ? ' 👑' : '';
+      const roleBadge = u.role === 'vip' ? ' ' : '';
       return `<div class="stat-user-item">
         <div class="stat-rank ${rank}">${i + 1}</div>
         <div class="stat-user-avatar">${u.name[0]}</div>
@@ -1034,7 +934,6 @@ function renderStats() {
       </div>`;
     }).join('');
 
-  // Топ альбомов
   const albumStats = {};
   viewLogs.forEach(l => {
     if (!albumStats[l.albumName]) albumStats[l.albumName] = { views: 0, users: new Set() };
@@ -1052,7 +951,6 @@ function renderStats() {
       <div class="stat-album-views">${data.views} 👁️</div>
     </div>`).join('');
 
-  // График за неделю
   const days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   const now = Date.now();
   const dayMs = 86400000;
@@ -1069,7 +967,6 @@ function renderStats() {
   }).join('');
 }
 
-/* ===== 📝 ЛОГИРОВАНИЕ ===== */
 function logView(photoId) {
   const photo = PHOTOS_DB[photoId];
   if (!photo) return;
@@ -1081,10 +978,9 @@ function logView(photoId) {
   });
   if (viewLogs.length > 500) viewLogs = viewLogs.slice(0, 500);
   localStorage.setItem('fa_logs', JSON.stringify(viewLogs));
-  checkAnomaly(photoId); // ← Проверка аномалий!
+  checkAnomaly(photoId);
 }
 
-/* ===== 🖼️ CANVAS ===== */
 function renderProtectedImage(canvas, url, quality) {
   const ctx = canvas.getContext('2d');
   const img = new Image();
@@ -1099,7 +995,7 @@ function renderProtectedImage(canvas, url, quality) {
     addWatermark(ctx, canvas.width, canvas.height);
     const b = document.getElementById('qualityBadge');
     b.className = quality === 'vip' ? 'quality-badge original' : 'quality-badge hd';
-    b.innerHTML = quality === 'vip' ? '👑 Original' : '📺 HD 1280px';
+    b.innerHTML = quality === 'vip' ? ' Original' : '📺 HD 1280px';
     showToast('🔒 Фото защищены');
   };
   img.onerror = () => { canvas.width=400; canvas.height=300; ctx.fillStyle='#1c1c1e'; ctx.fillRect(0,0,400,300); ctx.fillStyle='#fff'; ctx.font='16px sans-serif'; ctx.textAlign='center'; ctx.fillText('🔒 Защищено',200,150); };
@@ -1147,7 +1043,7 @@ function renderLogs() {
     const r=i===0?'gold':i===1?'silver':i===2?'bronze':'';
     return `<div class="top-photo-item"><div class="top-photo-rank ${r}">${i+1}</div><div class="top-photo-thumb" style="background-image:url('${d.th}')"></div><div class="top-photo-info"><div class="name">${d.t}</div><div class="album">${d.a}</div></div><div class="top-photo-views">${d.c}👁️</div></div>`;
   }).join('')||'<p style="color:var(--text-tertiary);text-align:center;padding:var(--space-4);font-size:var(--font-size-sm);">Нет данных</p>';
-  document.getElementById('logsList').innerHTML=f.slice(0,20).map(l=>`<div class="log-item"><div class="log-photo" style="background-image:url('${l.thumb}')"></div><div class="log-info"><div class="title">${l.photoTitle}</div><div class="meta"><span class="user">👤 ${l.userName}</span><span>${l.quality==='original'?'👑':'📺'}</span></div></div><div class="log-time">${getTimeAgo(l.timestamp)}</div></div>`).join('')||'<p style="text-align:center;padding:var(--space-8);color:var(--text-tertiary);">Пусто</p>';
+  document.getElementById('logsList').innerHTML=f.slice(0,20).map(l=>`<div class="log-item"><div class="log-photo" style="background-image:url('${l.thumb}')"></div><div class="log-info"><div class="title">${l.photoTitle}</div><div class="meta"><span class="user"> ${l.userName}</span><span>${l.quality==='original'?'👑':'📺'}</span></div></div><div class="log-time">${getTimeAgo(l.timestamp)}</div></div>`).join('')||'<p style="text-align:center;padding:var(--space-8);color:var(--text-tertiary);">Пусто</p>';
 }
 function filterLogs(f,el){currentFilter=f;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderLogs();}
 function getTimeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'только что';if(s<3600)return Math.floor(s/60)+' мин';if(s<86400)return Math.floor(s/3600)+' ч';return Math.floor(s/86400)+' дн';}
@@ -1171,12 +1067,7 @@ function closeDonate(){document.getElementById('donateModal').classList.remove('
 function selectAmount(el,a){document.querySelectorAll('.amount-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');document.querySelector('.modal .btn-donate').textContent=`💳 ${a} Stars`;}
 document.getElementById('donateModal').addEventListener('click',e=>{if(e.target.id==='donateModal')closeDonate();});
 
-function toggleRole(){CURRENT_USER.role=CURRENT_USER.role==='vip'?'guest':'vip';document.getElementById('roleBtn').textContent=CURRENT_USER.role==='vip'?'Выкл':'Вкл';
-  const r=document.getElementById('currentRole');r.className='role-indicator '+(CURRENT_USER.role==='vip'?'vip':'guest');r.innerHTML=CURRENT_USER.role==='vip'?'👑 VIP':'👤 Гость';
-  const isV=CURRENT_USER.role==='vip';document.getElementById('profileHeader').classList.toggle('vip',isV);document.getElementById('vipCrown').style.display=isV?'flex':'none';
-  document.getElementById('vipBadgeProfile').style.display=isV?'inline':'none';document.getElementById('vipCard').style.display=isV?'none':'flex';}
-function toggleTheme(){document.documentElement.classList.toggle('dark-mode');const d=document.documentElement.classList.contains('dark-mode');document.getElementById('themeBtn').textContent=d?'Выкл':'Вкл';}
-function togglePlatform(){document.documentElement.classList.toggle('android');const a=document.documentElement.classList.contains('android');document.getElementById('platformBtn').textContent=a?'Выкл':'Вкл';document.querySelector('.ios-icons').style.display=a?'none':'inline';document.querySelector('.android-icons').style.display=a?'flex':'none';}
+function toggleTheme(){document.documentElement.classList.toggle('dark-mode');}
 
 function initProtection(){
   document.addEventListener('contextmenu',e=>{e.preventDefault();showToast('🔒 Запрещено');});
