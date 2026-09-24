@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Семейный Архив</title>
+<!-- Cloudinary Upload Widget -->
+<script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 <style>
 :root {
   --color-primary: #2AABEE;
@@ -306,7 +308,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   display:flex; gap:var(--space-3); align-items:center; }
 .log-photo { width:56px; height:56px; border-radius:var(--radius-sm);
   background-size:cover; background-position:center; flex-shrink:0; position:relative; }
-.log-photo::after { content:'👁️'; position:absolute; bottom:2px; right:2px;
+.log-photo::after { content:'️'; position:absolute; bottom:2px; right:2px;
   background:rgba(0,0,0,0.7); color:#fff; font-size:10px; padding:2px 5px; border-radius:10px; }
 .log-info { flex:1; min-width:0; }
 .log-info .title { font-size:var(--font-size-md); font-weight:var(--font-weight-semibold);
@@ -390,19 +392,6 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   border-radius:var(--radius-md); text-align:center; }
 .stat-card .num { font-size:var(--font-size-xl); font-weight:var(--font-weight-bold); color:var(--color-primary); }
 .stat-card .label { font-size:var(--font-size-xs); color:var(--text-tertiary); margin-top:2px; }
-.admin-album { background:var(--bg-elevated); margin:0 var(--space-3) var(--space-2);
-  padding:var(--space-3); border-radius:var(--radius-md);
-  display:flex; gap:var(--space-3); align-items:center; }
-.admin-album-cover { width:60px; height:60px; border-radius:var(--radius-sm);
-  background-size:cover; flex-shrink:0; }
-.admin-album-info { flex:1; }
-.admin-album-info h4 { font-size:var(--font-size-md); margin-bottom:var(--space-1); color:var(--text-primary); }
-.admin-album-info p { font-size:var(--font-size-sm); color:var(--text-tertiary); }
-.admin-album-actions { display:flex; gap:var(--space-2); }
-.admin-album-actions button { padding:6px 10px; border:none; border-radius:var(--radius-sm);
-  font-size:var(--font-size-sm); cursor:pointer; }
-.btn-edit { background:rgba(42,171,238,0.15); color:var(--color-primary); }
-.btn-delete { background:rgba(255,59,48,0.15); color:var(--color-danger); }
 .form-group { background:var(--bg-elevated); margin:var(--space-2) var(--space-3);
   padding:var(--space-4); border-radius:var(--radius-md); }
 .form-group label { display:block; font-size:var(--font-size-sm); color:var(--text-tertiary); margin-bottom:var(--space-2); }
@@ -414,10 +403,6 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   padding:var(--space-6); text-align:center; color:var(--text-tertiary);
   cursor:pointer; margin:var(--space-2) var(--space-3); }
 .upload-area .icon { font-size:32px; margin-bottom:var(--space-2); }
-.radio-group { padding:var(--space-1) 0; }
-.radio-item { display:flex; align-items:center; padding:var(--space-3) 0;
-  cursor:pointer; font-size:var(--font-size-md); color:var(--text-primary); }
-.radio-item input { margin-right:var(--space-3); accent-color:var(--color-primary); }
 .form-actions { padding:var(--space-4) var(--space-3) var(--space-8); display:flex; gap:var(--space-2); }
 .loading-screen { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
   display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -497,11 +482,6 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 .amount-btn .stars { font-size:18px; margin-bottom:2px; }
 .amount-btn .num { font-size:var(--font-size-base); font-weight:var(--font-weight-semibold); color:var(--text-primary); }
 .amount-btn .label { font-size:var(--font-size-xs); color:var(--text-tertiary); }
-.custom-amount { display:flex; align-items:center; gap:var(--space-2);
-  padding:var(--space-3) var(--space-4); border:1px solid var(--border-color);
-  border-radius:var(--radius-md); margin-bottom:var(--space-4); background:var(--bg-primary); }
-.custom-amount input { flex:1; border:none; outline:none; font-size:var(--font-size-md);
-  background:transparent; color:var(--text-primary); }
 .perks { background:var(--bg-tertiary); border-radius:var(--radius-md);
   padding:var(--space-3) var(--space-4); margin-bottom:var(--space-4); font-size:var(--font-size-sm); }
 .perks h4 { font-size:var(--font-size-sm); margin-bottom:var(--space-2); color:var(--text-primary); }
@@ -516,6 +496,11 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   border: 3px solid var(--color-primary);
   cursor: pointer;
   transition: transform 0.2s;
+  background: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
 }
 .video-circle:hover { transform: scale(1.05); }
 .circles-grid {
@@ -553,11 +538,80 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   font-size: 20px;
   cursor: pointer;
 }
+
+/* Админ-панель загрузки */
+.upload-type-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.upload-type-btn {
+  padding: var(--space-4) var(--space-2);
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.upload-type-btn.active {
+  border-color: var(--color-primary);
+  background: rgba(42, 171, 238, 0.1);
+}
+.upload-type-btn .icon { font-size: 28px; margin-bottom: 4px; }
+.upload-type-btn .label { font-size: var(--font-size-xs); color: var(--text-secondary); }
+
+.album-selector {
+  margin-bottom: var(--space-4);
+}
+.album-selector select {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family);
+}
+
+.upload-status {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+.upload-status.success { background: rgba(52, 199, 89, 0.15); color: var(--color-success); }
+.upload-status.error { background: rgba(255, 59, 48, 0.15); color: var(--color-danger); }
+
+.media-item-wrapper {
+  position: relative;
+}
+.media-item-wrapper .delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 59, 48, 0.9);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.media-item-wrapper:hover .delete-btn { display: flex; }
 </style>
 </head>
 <body>
 <div class="phone-frame">
-  <div class="protection-toast" id="protectionToast">🔒 Фото защищены</div>
+  <div class="protection-toast" id="protectionToast"> Фото защищены</div>
   <div class="consent-overlay hidden" id="consentOverlay">
     <div class="consent-modal">
       <div class="consent-icon">🔒</div>
@@ -577,7 +631,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   </div>
   <div class="status-bar">
     <span>9:41</span>
-    <span> 📡 🔋</span>
+    <span>📶 📡 🔋</span>
   </div>
 
   <!-- ЗАГРУЗКА -->
@@ -596,22 +650,17 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   <div class="screen active" id="home">
     <div class="header">
       <h1>Семейный Архив</h1>
-      <div class="icon-btn" onclick="showScreen('alerts')" id="alertsBtn">🚨<span class="alert-badge-count" id="alertCount" style="display:none;">0</span></div>
+      <div class="icon-btn" onclick="showScreen('alerts')">🚨<span class="alert-badge-count" id="alertCount" style="display:none;">0</span></div>
       <div class="icon-btn" onclick="showScreen('stats')">📈</div>
       <div class="icon-btn" onclick="showScreen('profile')">👤</div>
     </div>
     <div class="welcome">
       <h2>Добро пожаловать! 👋</h2>
-      <p>24 альбома • 1 247 фото • 89 видео</p>
+      <p id="albumsCount">Загрузка альбомов...</p>
     </div>
     <div class="search-bar">🔍 Поиск по альбомам...</div>
-    <div class="albums-grid">
-      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/summer/400/300')"></div><div class="album-info"><h3>Лето 2024</h3><p>156 фото • 12 видео</p></div></div>
-      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/newyear/400/300')"></div><div class="album-info"><h3>Новый Год</h3><p>89 фото • 5 видео</p></div></div>
-      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/birthday/400/300')"></div><div class="album-info"><h3>ДР Мамы</h3><p>78 фото • 3 видео</p></div></div>
-      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/grad/400/300')"></div><div class="album-info"><h3>Выпускной</h3><p>234 фото • 18 видео</p></div></div>
-      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/trip/400/300')"></div><div class="album-info"><h3>Горы</h3><p>112 фото • 7 видео</p></div></div>
-      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/wedding/400/300')"></div><div class="album-info"><h3>Свадьба</h3><p>345 фото • 24 видео</p></div></div>
+    <div class="albums-grid" id="albumsGrid">
+      <!-- Альбомы рендерятся динамически -->
     </div>
     <div class="bottom-nav">
       <div class="nav-item active" onclick="showScreen('home')"><div class="nav-icon">🏠</div><div>Главная</div></div>
@@ -625,33 +674,26 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   <div class="screen" id="album">
     <div class="header">
       <button class="back-btn" onclick="showScreen('home')">‹</button>
-      <h1>Лето 2024</h1>
+      <h1 id="albumTitle">Альбом</h1>
       <div class="protection-badge">🔒</div>
-      <div class="icon-btn" onclick="showScreen('chat')">💬</div>
     </div>
-    <div class="album-hero" style="background-image:url('https://picsum.photos/seed/summer/800/400')"><div class="album-hero-info"><h2>Лето 2024 • Сочи</h2><p>156 фото • 12 видео</p></div></div>
+    <div class="album-hero" id="albumHero"><div class="album-hero-info"><h2 id="albumHeroTitle">Альбом</h2><p id="albumHeroDesc">Описание</p></div></div>
     <div style="padding: var(--space-3); display: flex; gap: var(--space-2);">
-      <button class="btn btn-primary" onclick="openVideoUpload()">📹 Загрузить кружочек</button>
-      <button class="btn btn-secondary" onclick="showToast('📷 Загрузка фото скоро будет доступна')">📷 Фото</button>
+      <button class="btn btn-primary" onclick="openUploadModal('circle')">📹 Кружочек</button>
+      <button class="btn btn-secondary" onclick="openUploadModal('photo')">📷 Фото</button>
+      <button class="btn btn-secondary" onclick="openUploadModal('video')">🎥 Видео</button>
     </div>
-    <div class="date-separator">📅 12 июля 2024</div>
-    <div class="media-grid">
-      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p1/200')" onclick="openPhoto('photo_001','Пляж на закате')"></div>
-      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p2/200')" onclick="openPhoto('photo_002','Морские волны')"></div>
-      <div class="media-item video" style="background-image:url('https://picsum.photos/seed/v1/200')" onclick="openPhoto('video_001','Набережная')"></div>
-      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p3/200')" onclick="openPhoto('photo_003','Пальмы')"></div>
-      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p4/200')" onclick="openPhoto('photo_004','Порт')"></div>
-      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p5/200')" onclick="openPhoto('photo_005','Лодки')"></div>
-      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p6/200')" onclick="openPhoto('photo_006','Горы')"></div>
-      <div class="media-item video" style="background-image:url('https://picsum.photos/seed/v2/200')" onclick="openPhoto('video_002','Купание')"></div>
+    <div class="date-separator" id="albumDate">📅 Дата</div>
+    <div class="media-grid" id="albumMediaGrid">
+      <!-- Медиа рендерятся динамически -->
     </div>
     <div style="padding: var(--space-3); border-top: 1px solid var(--border-color);">
       <h3 style="font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-3);">📹 Кружочки от семьи</h3>
       <div id="videoCirclesContainer" class="circles-grid"></div>
     </div>
     <div class="sticky-bottom">
-      <button class="btn btn-secondary" onclick="showScreen('chat')">💬 Обсудить (24)</button>
-      <button class="btn btn-donate" onclick="openDonate()">💝 Задонатить</button>
+      <button class="btn btn-secondary" onclick="showScreen('chat')">💬 Обсудить</button>
+      <button class="btn btn-donate" onclick="openDonate()"> Задонатить</button>
     </div>
   </div>
 
@@ -670,20 +712,18 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div class="protection-overlay"> Защищено водяным знаком</div>
     </div>
     <div class="media-meta">
-      <div id="photoTitle">📷 <strong>Пляж на закате</strong></div>
-      <div>📍 Сочи, пляж «Ривьера»</div>
-      <div>📅 12 июля 2024, 14:32</div>
-      <div id="viewCount">️ Просмотров: 0</div>
+      <div id="photoTitle">📷 <strong>Фото</strong></div>
+      <div id="photoMeta">📅 Дата</div>
+      <div id="viewCount">👁️ Просмотров: 0</div>
     </div>
     <div class="comments-section">
-      <h4>💬 Комментарии (3)</h4>
-      <div class="comment"><div class="avatar">М</div><div class="comment-body"><div class="comment-author">Мама</div><div class="comment-text">Какое чудо! </div></div></div>
-      <div class="comment"><div class="avatar" style="background:linear-gradient(135deg,#ff6b6b,#ee5a6f)">С</div><div class="comment-body"><div class="comment-author">Сестра</div><div class="comment-text">Хочу туда ещё! 🏖️</div></div></div>
+      <h4>💬 Комментарии</h4>
+      <div class="comment"><div class="avatar">М</div><div class="comment-body"><div class="comment-author">Мама</div><div class="comment-text">Какое чудо! 😍</div></div></div>
     </div>
     <div class="comment-input"><input type="text" placeholder="Комментарий..."><button>➤</button></div>
     <div class="reactions-bar">
       <div class="reaction liked">❤️ 12</div>
-      <div class="reaction" onclick="showScreen('chat')"> 3</div>
+      <div class="reaction" onclick="showScreen('chat')">💬 3</div>
       <div class="reaction" onclick="openDonate()">💝 Донат</div>
     </div>
   </div>
@@ -714,8 +754,8 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div class="stats-hero-grid">
         <div class="stats-hero-item"><div class="num" id="statTotalViews">0</div><div class="label">Просмотров</div></div>
         <div class="stats-hero-item"><div class="num" id="statTotalUsers">0</div><div class="label">Участников</div></div>
-        <div class="stats-hero-item"><div class="num">24</div><div class="label">Альбомов</div></div>
-        <div class="stats-hero-item"><div class="num">1 336</div><div class="label">Фото и видео</div></div>
+        <div class="stats-hero-item"><div class="num" id="statTotalAlbums">0</div><div class="label">Альбомов</div></div>
+        <div class="stats-hero-item"><div class="num" id="statTotalMedia">0</div><div class="label">Фото и видео</div></div>
       </div>
     </div>
     <div class="stats-section">
@@ -727,7 +767,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div id="topAlbumsList"></div>
     </div>
     <div class="stats-section">
-      <h4> Активность за неделю</h4>
+      <h4>📊 Активность за неделю</h4>
       <div class="bar-chart" id="weeklyChart"></div>
     </div>
     <div style="height:var(--space-8);"></div>
@@ -740,11 +780,11 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <h1>Логи просмотров</h1>
     </div>
     <div class="logs-summary">
-      <div class="log-stat-card"><div class="num" id="totalViews">0</div><div class="label">️ Всего</div></div>
+      <div class="log-stat-card"><div class="num" id="totalViews">0</div><div class="label">👁️ Всего</div></div>
       <div class="log-stat-card"><div class="num" id="uniqueUsers">0</div><div class="label">👥 Юзеров</div></div>
       <div class="log-stat-card"><div class="num" id="todayViews">0</div><div class="label">📅 Сегодня</div></div>
     </div>
-    <div class="top-photos"><h4> Топ фото</h4><div id="topPhotosList"></div></div>
+    <div class="top-photos"><h4>🏆 Топ фото</h4><div id="topPhotosList"></div></div>
     <div class="logs-filters">
       <div class="filter-chip active" onclick="filterLogs('all',this)">Все</div>
       <div class="filter-chip" onclick="filterLogs('today',this)">Сегодня</div>
@@ -755,15 +795,14 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 
   <!-- ЧАТ -->
   <div class="screen" id="chat">
-    <div class="header"><button class="back-btn" onclick="showScreen('album')">‹</button><div class="chat-header-info"><div class="chat-avatar">Л</div><div><div class="chat-name">Лето 2024</div><div class="chat-status">● 5 онлайн</div></div></div></div>
+    <div class="header"><button class="back-btn" onclick="showScreen('album')">‹</button><div class="chat-header-info"><div class="chat-avatar">Л</div><div><div class="chat-name">Чат альбома</div><div class="chat-status">● Онлайн</div></div></div></div>
     <div class="chat-messages">
-      <div class="chat-date-divider">12 июля 2024</div>
+      <div class="chat-date-divider">Сегодня</div>
       <div class="message in"><span class="message-author">Мама</span>Смотрите фото! 😍<span class="message-time">14:35</span></div>
       <div class="message out">Море потрясающее! 🌊<span class="message-time">14:38 ✓✓</span></div>
-      <div class="message in"><span class="message-author">Дедушка</span>Спасибо за архив ❤️<span class="message-time">14:40</span></div>
     </div>
     <div class="open-telegram-btn">💬 Открыть в Telegram</div>
-    <div class="comment-input"><input type="text" placeholder="Сообщение..."><button>➤</button></div>
+    <div class="comment-input"><input type="text" placeholder="Сообщение..."><button></button></div>
   </div>
 
   <!-- ДОНАТЫ -->
@@ -771,8 +810,8 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>История донатов</h1></div>
     <div class="donations-summary"><div class="total">⭐ 2 450</div><div class="label">Всего Stars</div></div>
     <div class="donations-list">
-      <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Мама</div><div class="date">Сегодня, 10:15</div></div><div class="donation-amount">+250 ⭐</div></div>
-      <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Дедушка</div><div class="date">Вчера, 14:20</div></div><div class="donation-amount">+500 ⭐</div></div>
+      <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Мама</div><div class="date">Сегодня, 10:15</div></div><div class="donation-amount">+250 </div></div>
+      <div class="donation-item"><div class="donation-icon"></div><div class="donation-info"><div class="name">Дедушка</div><div class="date">Вчера, 14:20</div></div><div class="donation-amount">+500 ⭐</div></div>
     </div>
     <div style="padding:0 var(--space-3) var(--space-5);"><button class="btn btn-donate" style="width:100%;" onclick="openDonate()">💝 Поддержать</button></div>
   </div>
@@ -781,44 +820,54 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   <div class="screen" id="profile">
     <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>Профиль</h1></div>
     <div class="profile-header" id="profileHeader">
-      <div class="profile-avatar">👤<div class="vip-crown" id="vipCrown" style="display:none;">👑</div></div>
+      <div class="profile-avatar"></div>
       <h2 id="profileName">Гость</h2>
       <p id="profileUsername">@guest</p>
     </div>
     <div class="vip-card" id="vipCard"><div class="icon">👑</div><div class="info"><h4>Станьте VIP</h4><p>Оригинальное качество фото</p></div><button class="btn" onclick="openDonate()">Получить</button></div>
     <div class="stats-block"><div class="block-title">📊 Статистика</div>
-      <div class="stat-row"><span>👁️ Альбомов</span><strong>24</strong></div>
+      <div class="stat-row"><span>👁️ Альбомов</span><strong id="profileAlbums">0</strong></div>
       <div class="stat-row"><span>💝 Донатов</span><strong>500 ⭐</strong></div>
     </div>
-    <div class="settings-block"><div class="block-title">️ Настройки</div>
+    <div class="settings-block"><div class="block-title">⚙️ Настройки</div>
       <div class="setting-row"><div class="left">🔔 Уведомления</div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
       <div class="setting-row"><div class="left">🌙 Тёмная тема</div><div class="toggle" onclick="this.classList.toggle('on');toggleTheme()"></div></div>
     </div>
-    <div class="logout-btn">🚪 Выйти</div>
+    <div class="logout-btn"> Выйти</div>
   </div>
 
   <!-- АДМИНКА -->
   <div class="screen" id="admin">
     <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>Управление</h1></div>
     <div style="padding:var(--space-3);display:flex;gap:var(--space-2);">
-      <button class="btn btn-primary" style="flex:2;" onclick="showScreen('create')">+ Альбом</button>
-      <button class="btn btn-secondary" onclick="showScreen('logs')"> Логи</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="openCreateAlbumModal()">+ Новый альбом</button>
+      <button class="btn btn-secondary" onclick="showScreen('logs')">📋 Логи</button>
       <button class="btn btn-danger" style="flex:0.7;" onclick="showScreen('alerts')">🚨</button>
     </div>
     <div class="admin-stats">
       <div class="stat-card"><div class="num">2 450</div><div class="label">⭐ Stars</div></div>
       <div class="stat-card"><div class="num">34</div><div class="label">👥 Гостей</div></div>
-      <div class="stat-card"><div class="num" id="adminViewsCount">0</div><div class="label">👁️ Просм.</div></div>
+      <div class="stat-card"><div class="num" id="adminViewsCount">0</div><div class="label">️ Просм.</div></div>
     </div>
+    <div style="padding:var(--space-2) var(--space-3);font-size:var(--font-size-sm);color:var(--text-tertiary);font-weight:var(--font-weight-semibold);">📁 ВСЕ АЛЬБОМЫ</div>
+    <div id="adminAlbumsList"></div>
   </div>
 
-  <!-- СОЗДАНИЕ -->
+  <!-- СОЗДАНИЕ АЛЬБОМА -->
   <div class="screen" id="create">
     <div class="header"><button class="back-btn" onclick="showScreen('admin')">‹</button><h1>Новый альбом</h1></div>
-    <div class="form-group"><label>Название</label><input type="text" placeholder="Лето 2025"></div>
-    <div class="form-group"><label>Описание</label><textarea placeholder="О событии..."></textarea></div>
-    <div class="upload-area"><div class="icon">📷</div><div>Загрузить фото и видео</div></div>
-    <div class="form-actions"><button class="btn btn-primary">Создать</button><button class="btn btn-secondary" onclick="showScreen('admin')">Отмена</button></div>
+    <div class="form-group"><label>Название</label><input type="text" id="newAlbumName" placeholder="Например: Лето 2025"></div>
+    <div class="form-group"><label>Описание</label><textarea id="newAlbumDesc" placeholder="О событии..."></textarea></div>
+    <div class="form-group"><label> Дата</label><input type="text" id="newAlbumDate" placeholder="12 июля 2024"></div>
+    <div class="form-group"><label>📍 Место</label><input type="text" id="newAlbumLocation" placeholder="Сочи"></div>
+    <div class="upload-area" onclick="openUploadModal('cover')">
+      <div class="icon">🖼️</div>
+      <div>Загрузить обложку</div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="createAlbum()">Создать альбом</button>
+      <button class="btn btn-secondary" onclick="showScreen('admin')">Отмена</button>
+    </div>
   </div>
 
   <!-- ДОНАТ МОДАЛКА -->
@@ -839,68 +888,517 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     </div>
   </div>
 
-  <!-- ВИДЕО ЗАГРУЗКА МОДАЛКА -->
-  <div class="modal-overlay" id="videoUploadModal">
+  <!-- МОДАЛКА ЗАГРУЗКИ ЧЕРЕЗ CLOUDINARY -->
+  <div class="modal-overlay" id="uploadModal">
     <div class="modal" style="max-height: 90vh; overflow-y: auto;">
       <div class="modal-handle"></div>
-      <h2>📹 Загрузить кружочек</h2>
-      <p class="subtitle">Запишите новое видео или выберите из галереи</p>
+      <h2 id="uploadModalTitle">📤 Загрузка</h2>
+      <p class="subtitle" id="uploadModalSubtitle">Выберите файлы для загрузки</p>
 
-      <div style="display: flex; gap: var(--space-2); margin-bottom: var(--space-4);">
-        <button class="btn btn-primary" onclick="startRecording()" style="flex: 1;">🎥 Записать</button>
-        <button class="btn btn-secondary" onclick="selectFromGallery()" style="flex: 1;">📁 Из галереи</button>
-      </div>
-
-      <input type="file" id="videoInput" accept="video/*" capture="environment" style="display: none;" onchange="handleVideoSelect(event)">
-      <input type="file" id="galleryInput" accept="video/*" style="display: none;" onchange="handleVideoSelect(event)">
-
-      <div id="videoPreview" style="display: none; text-align: center; margin-bottom: var(--space-4);">
-        <video id="previewVideo" controls style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 3px solid var(--color-primary);"></video>
-        <p style="margin-top: var(--space-3); font-size: var(--font-size-sm); color: var(--text-tertiary);">Предпросмотр кружочка</p>
-      </div>
-
-      <div class="form-group" style="margin: 0 0 var(--space-4) 0;">
-        <label>Описание (необязательно)</label>
-        <input type="text" id="videoDescription" placeholder="Например: Привет всем!">
-      </div>
-
-      <div style="display: flex; gap: var(--space-2);">
-        <button class="btn btn-secondary" onclick="closeVideoUpload()" style="flex: 1;">Отмена</button>
-        <button class="btn btn-success" id="uploadVideoBtn" onclick="uploadVideo()" style="flex: 2; display: none;">✅ Загрузить</button>
-      </div>
-
-      <div id="uploadProgress" style="display: none; margin-top: var(--space-4);">
-        <div style="height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
-          <div id="progressBar" style="height: 100%; width: 0%; background: var(--color-primary); transition: width 0.3s;"></div>
+      <div class="upload-type-selector">
+        <div class="upload-type-btn active" data-type="photo" onclick="selectUploadType('photo', this)">
+          <div class="icon">📷</div>
+          <div class="label">Фото</div>
         </div>
-        <p style="text-align: center; margin-top: var(--space-2); font-size: var(--font-size-sm); color: var(--text-tertiary);">
-          Загрузка... <span id="progressText">0%</span>
-        </p>
+        <div class="upload-type-btn" data-type="video" onclick="selectUploadType('video', this)">
+          <div class="icon"></div>
+          <div class="label">Видео</div>
+        </div>
+        <div class="upload-type-btn" data-type="circle" onclick="selectUploadType('circle', this)">
+          <div class="icon">📹</div>
+          <div class="label">Кружочек</div>
+        </div>
+      </div>
+
+      <div class="album-selector">
+        <label style="font-size: var(--font-size-sm); color: var(--text-tertiary); margin-bottom: 4px; display: block;">Альбом</label>
+        <select id="uploadAlbumSelect"></select>
+      </div>
+
+      <div class="form-group" style="margin: 0 0 var(--space-3) 0;">
+        <label>Описание (необязательно)</label>
+        <input type="text" id="uploadDescription" placeholder="Например: Пляж на закате">
+      </div>
+
+      <button class="btn btn-primary" style="width: 100%;" onclick="openCloudinaryWidget()">
+        ☁️ Выбрать файлы
+      </button>
+
+      <div id="uploadStatus" class="upload-status" style="display: none;"></div>
+
+      <button class="btn btn-secondary" style="width: 100%; margin-top: var(--space-3);" onclick="closeUploadModal()">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА СОЗДАНИЯ АЛЬБОМА -->
+  <div class="modal-overlay" id="createAlbumModal">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2>📁 Новый альбом</h2>
+      <div class="form-group" style="margin: 0 0 var(--space-3) 0;">
+        <label>Название</label>
+        <input type="text" id="modalAlbumName" placeholder="Например: Лето 2025">
+      </div>
+      <div class="form-group" style="margin: 0 0 var(--space-3) 0;">
+        <label>Описание</label>
+        <textarea id="modalAlbumDesc" placeholder="О событии..."></textarea>
+      </div>
+      <div class="form-group" style="margin: 0 0 var(--space-3) 0;">
+        <label>📅 Дата</label>
+        <input type="text" id="modalAlbumDate" placeholder="12 июля 2024">
+      </div>
+      <div class="form-group" style="margin: 0 0 var(--space-3) 0;">
+        <label>📍 Место</label>
+        <input type="text" id="modalAlbumLocation" placeholder="Сочи">
+      </div>
+      <div style="display: flex; gap: var(--space-2);">
+        <button class="btn btn-secondary" onclick="closeCreateAlbumModal()">Отмена</button>
+        <button class="btn btn-primary" onclick="createAlbumFromModal()">Создать</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const CURRENT_USER = { id:123456789, username:'guest', name:'Гость', role:'guest' };
-let hasConsented = localStorage.getItem('fa_consent')==='true';
-let viewLogs = JSON.parse(localStorage.getItem('fa_logs')||'[]');
-let alerts = JSON.parse(localStorage.getItem('fa_alerts')||'[]');
-let videoCircles = JSON.parse(localStorage.getItem('fa_video_circles')||'[]');
-let currentPhoto = null, currentFilter = 'all';
-let selectedVideoFile = null;
-
-const PHOTOS_DB = {
-  'photo_001':{title:'Пляж на закате',album:'Лето 2024',thumb:'https://picsum.photos/seed/p1/100'},
-  'photo_002':{title:'Морские волны',album:'Лето 2024',thumb:'https://picsum.photos/seed/p2/100'},
-  'photo_003':{title:'Пальмы',album:'Лето 2024',thumb:'https://picsum.photos/seed/p3/100'},
-  'photo_004':{title:'Порт',album:'Лето 2024',thumb:'https://picsum.photos/seed/p4/100'},
-  'photo_005':{title:'Лодки',album:'Лето 2024',thumb:'https://picsum.photos/seed/p5/100'},
-  'photo_006':{title:'Горы',album:'Лето 2024',thumb:'https://picsum.photos/seed/p6/100'},
-  'video_001':{title:'Набережная',album:'Лето 2024',thumb:'https://picsum.photos/seed/v1/100'},
-  'video_002':{title:'Купание',album:'Лето 2024',thumb:'https://picsum.photos/seed/v2/100'}
+// ============================================
+// ⚙️ НАСТРОЙКИ CLOUDINARY
+// ============================================
+const CLOUDINARY_CONFIG = {
+  cloudName: 'ВАШ_CLOUD_NAME', // ← ЗАМЕНИТЕ на ваш cloud name из Cloudinary
+  uploadPreset: 'family_archive_unsigned' // ← ЗАМЕНИТЕ на ваш upload preset
 };
 
+// ============================================
+//  ДАННЫЕ ПРИЛОЖЕНИЯ
+// ============================================
+const CURRENT_USER = { id: 123456789, username: 'guest', name: 'Гость', role: 'guest' };
+let hasConsented = localStorage.getItem('fa_consent') === 'true';
+let viewLogs = JSON.parse(localStorage.getItem('fa_logs') || '[]');
+let alerts = JSON.parse(localStorage.getItem('fa_alerts') || '[]');
+let currentPhoto = null, currentFilter = 'all';
+let currentUploadType = 'photo';
+let currentAlbumId = null;
+
+// Структура данных: альбомы и медиа
+let appData = JSON.parse(localStorage.getItem('fa_app_data') || 'null') || {
+  albums: [
+    {
+      id: 'album_1',
+      name: 'Лето 2024',
+      description: 'Отпуск в Сочи',
+      date: '12 июля 2024',
+      location: 'Сочи',
+      cover: 'https://picsum.photos/seed/summer/800/400',
+      createdAt: Date.now()
+    },
+    {
+      id: 'album_2',
+      name: 'Новый Год',
+      description: 'Празднование 2024',
+      date: '31 декабря 2023',
+      location: 'Дома',
+      cover: 'https://picsum.photos/seed/newyear/800/400',
+      createdAt: Date.now()
+    }
+  ],
+  media: [
+    { id: 'm1', albumId: 'album_1', type: 'photo', url: 'https://picsum.photos/seed/p1/800', thumb: 'https://picsum.photos/seed/p1/200', title: 'Пляж', createdAt: Date.now() },
+    { id: 'm2', albumId: 'album_1', type: 'photo', url: 'https://picsum.photos/seed/p2/800', thumb: 'https://picsum.photos/seed/p2/200', title: 'Море', createdAt: Date.now() },
+    { id: 'm3', albumId: 'album_1', type: 'video', url: 'https://picsum.photos/seed/v1/800', thumb: 'https://picsum.photos/seed/v1/200', title: 'Набережная', createdAt: Date.now() }
+  ],
+  circles: []
+};
+
+function saveAppData() {
+  localStorage.setItem('fa_app_data', JSON.stringify(appData));
+}
+
+// ============================================
+// 🎨 РЕНДЕРИНГ ИНТЕРФЕЙСА
+// ============================================
+function renderHome() {
+  const grid = document.getElementById('albumsGrid');
+  const countEl = document.getElementById('albumsCount');
+  
+  countEl.textContent = `${appData.albums.length} альбомов • ${appData.media.length} фото и видео`;
+  
+  if (appData.albums.length === 0) {
+    grid.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-8);grid-column:1/-1;">Нет альбомов. Создайте первый!</p>';
+    return;
+  }
+  
+  grid.innerHTML = appData.albums.map(album => {
+    const mediaCount = appData.media.filter(m => m.albumId === album.id).length;
+    return `
+      <div class="album-card" onclick="openAlbum('${album.id}')">
+        <div class="album-cover" style="background-image:url('${album.cover}')"></div>
+        <div class="album-info">
+          <h3>${album.name}</h3>
+          <p>${mediaCount} фото и видео</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openAlbum(albumId) {
+  currentAlbumId = albumId;
+  const album = appData.albums.find(a => a.id === albumId);
+  if (!album) return;
+  
+  document.getElementById('albumTitle').textContent = album.name;
+  document.getElementById('albumHero').style.backgroundImage = `url('${album.cover}')`;
+  document.getElementById('albumHeroTitle').textContent = `${album.name} • ${album.location || ''}`;
+  document.getElementById('albumHeroDesc').textContent = `${album.description || ''} • ${album.date || ''}`;
+  document.getElementById('albumDate').textContent = ` ${album.date || 'Дата не указана'}`;
+  
+  renderAlbumMedia(albumId);
+  renderVideoCircles(albumId);
+  showScreen('album');
+}
+
+function renderAlbumMedia(albumId) {
+  const grid = document.getElementById('albumMediaGrid');
+  const media = appData.media.filter(m => m.albumId === albumId);
+  
+  if (media.length === 0) {
+    grid.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-8);grid-column:1/-1;">Нет медиа. Загрузите первое фото!</p>';
+    return;
+  }
+  
+  grid.innerHTML = media.map(m => `
+    <div class="media-item-wrapper">
+      <div class="media-item ${m.type === 'video' ? 'video' : ''}" 
+           style="background-image:url('${m.thumb}')" 
+           onclick="openMedia('${m.id}')"></div>
+      <button class="delete-btn" onclick="deleteMedia('${m.id}', event)">✕</button>
+    </div>
+  `).join('');
+}
+
+function renderVideoCircles(albumId) {
+  const container = document.getElementById('videoCirclesContainer');
+  const circles = appData.circles.filter(c => c.albumId === albumId);
+  
+  if (circles.length === 0) {
+    container.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-4);grid-column:1/-1;">Пока нет кружочков</p>';
+    return;
+  }
+  
+  container.innerHTML = circles.map(c => `
+    <div style="text-align:center;">
+      <div class="video-circle" onclick="playCircle('${c.id}')">📹</div>
+      <p style="font-size:var(--font-size-xs);color:var(--text-tertiary);margin-top:4px;">${c.userName || 'Гость'}</p>
+    </div>
+  `).join('');
+}
+
+function renderAdminAlbums() {
+  const list = document.getElementById('adminAlbumsList');
+  if (!list) return;
+  
+  list.innerHTML = appData.albums.map(album => {
+    const mediaCount = appData.media.filter(m => m.albumId === album.id).length;
+    return `
+      <div class="admin-album" style="background:var(--bg-elevated);margin:0 var(--space-3) var(--space-2);padding:var(--space-3);border-radius:var(--radius-md);display:flex;gap:var(--space-3);align-items:center;">
+        <div class="admin-album-cover" style="width:60px;height:60px;border-radius:var(--radius-sm);background-size:cover;background-position:center;background-image:url('${album.cover}');flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <h4 style="font-size:var(--font-size-md);margin-bottom:var(--space-1);color:var(--text-primary);">${album.name}</h4>
+          <p style="font-size:var(--font-size-sm);color:var(--text-tertiary);">${mediaCount} медиа • ${album.date || ''}</p>
+        </div>
+        <button class="btn-delete" style="background:rgba(255,59,48,0.15);color:var(--color-danger);padding:6px 10px;border:none;border-radius:var(--radius-sm);font-size:var(--font-size-sm);cursor:pointer;" onclick="deleteAlbum('${album.id}')">️</button>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================
+// 📤 ЗАГРУЗКА ЧЕРЕЗ CLOUDINARY
+// ============================================
+let cloudinaryWidget = null;
+
+function initCloudinaryWidget() {
+  if (typeof cloudinary === 'undefined') {
+    console.error('Cloudinary widget не загружен');
+    return null;
+  }
+  
+  return cloudinary.createUploadWidget({
+    cloudName: CLOUDINARY_CONFIG.cloudName,
+    uploadPreset: CLOUDINARY_CONFIG.uploadPreset,
+    sources: ['local', 'camera', 'url'],
+    multiple: true,
+    maxFiles: 10,
+    maxFileSize: 50000000, // 50 МБ
+    clientAllowedFormats: ['image', 'video'],
+    maxImageFileSize: 50000000,
+    maxVideoFileSize: 50000000,
+    folder: 'family-archive',
+    cropping: false,
+    croppingShowDimensions: true,
+    theme: 'minimal'
+  }, (error, result) => {
+    if (error) {
+      showUploadStatus('error', `❌ Ошибка: ${error.message}`);
+      return;
+    }
+    if (result.event === 'success') {
+      handleCloudinaryUpload(result.info);
+    }
+    if (result.event === 'closed') {
+      console.log('Виджет закрыт');
+    }
+  });
+}
+
+function handleCloudinaryUpload(info) {
+  const albumId = document.getElementById('uploadAlbumSelect').value;
+  const description = document.getElementById('uploadDescription').value;
+  const isVideo = info.resource_type === 'video';
+  const isCircle = currentUploadType === 'circle';
+  
+  // Формируем URL с оптимизацией
+  const optimizedUrl = info.secure_url.replace('/upload/', '/upload/w_1920,q_85/');
+  const thumbUrl = info.secure_url.replace('/upload/', '/upload/w_400,h_400,c_fill,q_80/');
+  
+  if (isCircle) {
+    // Сохраняем как кружочек
+    const circle = {
+      id: 'circle_' + Date.now(),
+      albumId: albumId,
+      url: optimizedUrl,
+      thumb: thumbUrl,
+      description: description,
+      userId: CURRENT_USER.id,
+      userName: CURRENT_USER.name,
+      createdAt: Date.now()
+    };
+    appData.circles.unshift(circle);
+    showUploadStatus('success', '✅ Кружочек загружен!');
+  } else {
+    // Сохраняем как медиа
+    const media = {
+      id: 'media_' + Date.now(),
+      albumId: albumId,
+      type: isVideo ? 'video' : 'photo',
+      url: optimizedUrl,
+      thumb: thumbUrl,
+      title: description || info.original_filename,
+      createdAt: Date.now()
+    };
+    appData.media.push(media);
+    showUploadStatus('success', `✅ ${isVideo ? 'Видео' : 'Фото'} загружено!`);
+  }
+  
+  saveAppData();
+  
+  // Обновляем интерфейс
+  setTimeout(() => {
+    closeUploadModal();
+    renderHome();
+    if (currentAlbumId) {
+      renderAlbumMedia(currentAlbumId);
+      renderVideoCircles(currentAlbumId);
+    }
+    showToast('✅ Загрузка завершена!');
+  }, 1000);
+}
+
+function openCloudinaryWidget() {
+  const albumId = document.getElementById('uploadAlbumSelect').value;
+  if (!albumId) {
+    showUploadStatus('error', '❌ Сначала выберите альбом');
+    return;
+  }
+  
+  if (!cloudinaryWidget) {
+    cloudinaryWidget = initCloudinaryWidget();
+  }
+  
+  if (cloudinaryWidget) {
+    cloudinaryWidget.open();
+  } else {
+    showUploadStatus('error', '❌ Cloudinary не настроен. Проверьте CLOUDINARY_CONFIG');
+  }
+}
+
+function showUploadStatus(type, message) {
+  const status = document.getElementById('uploadStatus');
+  status.className = 'upload-status ' + type;
+  status.textContent = message;
+  status.style.display = 'block';
+  setTimeout(() => { status.style.display = 'none'; }, 5000);
+}
+
+// ============================================
+// 🎛️ УПРАВЛЕНИЕ МОДАЛКАМИ
+// ============================================
+function openUploadModal(type) {
+  currentUploadType = type;
+  document.getElementById('uploadModalTitle').textContent = 
+    type === 'circle' ? '📹 Загрузить кружочек' : 
+    type === 'video' ? '🎥 Загрузить видео' : '📷 Загрузить фото';
+  
+  // Заполняем селект альбомов
+  const select = document.getElementById('uploadAlbumSelect');
+  select.innerHTML = appData.albums.map(a => 
+    `<option value="${a.id}" ${a.id === currentAlbumId ? 'selected' : ''}>${a.name}</option>`
+  ).join('');
+  
+  // Устанавливаем активный тип
+  document.querySelectorAll('.upload-type-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+  
+  document.getElementById('uploadModal').classList.add('active');
+  document.getElementById('uploadStatus').style.display = 'none';
+}
+
+function closeUploadModal() {
+  document.getElementById('uploadModal').classList.remove('active');
+  document.getElementById('uploadDescription').value = '';
+}
+
+function selectUploadType(type, el) {
+  currentUploadType = type;
+  document.querySelectorAll('.upload-type-btn').forEach(btn => btn.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function openCreateAlbumModal() {
+  document.getElementById('createAlbumModal').classList.add('active');
+}
+
+function closeCreateAlbumModal() {
+  document.getElementById('createAlbumModal').classList.remove('active');
+}
+
+function createAlbumFromModal() {
+  const name = document.getElementById('modalAlbumName').value.trim();
+  if (!name) { alert('Введите название альбома'); return; }
+  
+  const album = {
+    id: 'album_' + Date.now(),
+    name: name,
+    description: document.getElementById('modalAlbumDesc').value,
+    date: document.getElementById('modalAlbumDate').value,
+    location: document.getElementById('modalAlbumLocation').value,
+    cover: 'https://picsum.photos/seed/' + Date.now() + '/800/400',
+    createdAt: Date.now()
+  };
+  
+  appData.albums.push(album);
+  saveAppData();
+  closeCreateAlbumModal();
+  renderHome();
+  renderAdminAlbums();
+  showToast('✅ Альбом создан!');
+  
+  // Очищаем поля
+  document.getElementById('modalAlbumName').value = '';
+  document.getElementById('modalAlbumDesc').value = '';
+  document.getElementById('modalAlbumDate').value = '';
+  document.getElementById('modalAlbumLocation').value = '';
+}
+
+function createAlbum() {
+  createAlbumFromModal();
+  showScreen('admin');
+}
+
+function deleteAlbum(albumId) {
+  if (!confirm('Удалить альбом и все его медиа?')) return;
+  appData.albums = appData.albums.filter(a => a.id !== albumId);
+  appData.media = appData.media.filter(m => m.albumId !== albumId);
+  appData.circles = appData.circles.filter(c => c.albumId !== albumId);
+  saveAppData();
+  renderHome();
+  renderAdminAlbums();
+  showToast('🗑️ Альбом удалён');
+}
+
+function deleteMedia(mediaId, event) {
+  event.stopPropagation();
+  if (!confirm('Удалить это медиа?')) return;
+  appData.media = appData.media.filter(m => m.id !== mediaId);
+  saveAppData();
+  renderAlbumMedia(currentAlbumId);
+  showToast('🗑️ Медиа удалено');
+}
+
+function playCircle(circleId) {
+  const circle = appData.circles.find(c => c.id === circleId);
+  if (!circle) return;
+  
+  const viewer = document.createElement('div');
+  viewer.className = 'circle-viewer';
+  viewer.innerHTML = `
+    <video src="${circle.url}" controls autoplay style="max-width:100%;max-height:100%;border-radius:50%;border:4px solid #fff;"></video>
+    <button class="close-btn" onclick="this.parentElement.remove()">✕</button>
+  `;
+  document.body.appendChild(viewer);
+  viewer.addEventListener('click', (e) => { if (e.target === viewer) viewer.remove(); });
+}
+
+function openMedia(mediaId) {
+  const media = appData.media.find(m => m.id === mediaId);
+  if (!media) return;
+  
+  currentPhoto = { id: media.id, url: media.url, title: media.title };
+  logView(media);
+  
+  document.getElementById('photoTitle').innerHTML = `📷 <strong>${media.title || 'Фото'}</strong>`;
+  document.getElementById('photoMeta').textContent = `📅 ${new Date(media.createdAt).toLocaleDateString('ru-RU')}`;
+  
+  const views = viewLogs.filter(l => l.photoId === media.id).length;
+  document.getElementById('viewCount').textContent = `️ Просмотров: ${views}`;
+  
+  showScreen('viewer');
+}
+
+// ============================================
+// 🛡️ ЗАЩИТА И ВОДЯНЫЕ ЗНАКИ
+// ============================================
+function renderProtectedImage(canvas, url, quality) {
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const mw = canvas.parentElement.clientWidth, mh = canvas.parentElement.clientHeight;
+    let w = img.width, h = img.height;
+    const max = quality === 'vip' ? 99999 : 1280;
+    const r = Math.min(mw/w, mh/h, max/Math.max(w,h));
+    canvas.width = w*r; canvas.height = h*r;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    addWatermark(ctx, canvas.width, canvas.height);
+    const b = document.getElementById('qualityBadge');
+    b.className = quality === 'vip' ? 'quality-badge original' : 'quality-badge hd';
+    b.innerHTML = quality === 'vip' ? '👑 Original' : '📺 HD 1280px';
+    showToast(' Фото защищены');
+  };
+  img.onerror = () => { 
+    canvas.width=400; canvas.height=300; 
+    ctx.fillStyle='#1c1c1e'; ctx.fillRect(0,0,400,300); 
+    ctx.fillStyle='#fff'; ctx.font='16px sans-serif'; ctx.textAlign='center'; 
+    ctx.fillText('🔒 Защищено',200,150); 
+  };
+  img.src = url;
+}
+
+function addWatermark(ctx, w, h) {
+  ctx.save();
+  const t = `@${CURRENT_USER.username} • ${CURRENT_USER.id}`;
+  ctx.globalAlpha=0.12; ctx.font='bold 18px sans-serif'; ctx.fillStyle='#fff'; ctx.strokeStyle='#000'; ctx.lineWidth=1;
+  ctx.translate(w/2,h/2); ctx.rotate(-25*Math.PI/180);
+  for(let y=-h;y<h;y+=120) for(let x=-w;x<w;x+=350){ctx.strokeText(t,x,y);ctx.fillText(t,x,y);}
+  ctx.restore();
+  ctx.save(); ctx.globalAlpha=0.5; ctx.font='bold 11px sans-serif'; ctx.fillStyle='#fff'; ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.textAlign='right'; ctx.textBaseline='bottom';
+  ctx.strokeText(`🔒 ${t}`,w-10,h-10); ctx.fillText(`🔒 ${t}`,w-10,h-10); ctx.restore();
+}
+
+// ============================================
+// 📊 ЛОГИ И АЛЕРТЫ
+// ============================================
 const ANOMALY_THRESHOLDS = { userPerMinute: 10, userPerMinuteCritical: 30, totalPerMinute: 50, rapidPhotos: 5 };
 
 function checkAnomaly(photoId) {
@@ -917,10 +1415,6 @@ function checkAnomaly(photoId) {
   const uniquePhotos = new Set(rapidViews.map(l => l.photoId));
   if (uniquePhotos.size > ANOMALY_THRESHOLDS.rapidPhotos) {
     createAlert('critical', '🔴 Быстрое переключение фото', `@${CURRENT_USER.username} открыл ${uniquePhotos.size} разных фото за 10 сек!`, CURRENT_USER.id, CURRENT_USER.name);
-  }
-  const totalRecent = viewLogs.filter(l => l.timestamp > oneMinAgo);
-  if (totalRecent.length > ANOMALY_THRESHOLDS.totalPerMinute) {
-    createAlert('warning', '🟡 Высокая нагрузка', `Суммарно ${totalRecent.length} просмотров за минуту.`, null, 'Система');
   }
 }
 
@@ -948,90 +1442,42 @@ function renderAlerts() {
   const warnings = alerts.filter(a => a.level === 'warning' && !a.resolved).length;
   document.getElementById('criticalCount').textContent = critical;
   document.getElementById('warningCount').textContent = warnings;
-  list.innerHTML = alerts.length === 0 ? '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-8);font-size:var(--font-size-sm);">✅ Всё спокойно. Аномалий не обнаружено.</p>' : alerts.slice(0, 20).map(a => `<div class="alert-item ${a.level} ${a.resolved ? 'resolved' : ''}"><div class="alert-icon">${a.level === 'critical' ? '🔴' : '🟡'}</div><div class="alert-body"><div class="alert-title">${a.title}</div><div class="alert-desc">${a.desc}</div><div class="alert-time">${getTimeAgo(a.timestamp)}${a.resolved ? ' • ✅ Решено' : ''}</div>${!a.resolved ? `<div class="alert-actions"><button class="btn-success" onclick="resolveAlert(${a.id})">✅ Решено</button>${a.userId ? `<button class="btn-danger" onclick="blockUser(${a.userId})">🚫 Блок</button>` : ''}</div>` : ''}</div></div>`).join('');
+  list.innerHTML = alerts.length === 0 ? '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-8);font-size:var(--font-size-sm);">✅ Всё спокойно.</p>' : alerts.slice(0, 20).map(a => `<div class="alert-item ${a.level} ${a.resolved ? 'resolved' : ''}"><div class="alert-icon">${a.level === 'critical' ? '🔴' : '🟡'}</div><div class="alert-body"><div class="alert-title">${a.title}</div><div class="alert-desc">${a.desc}</div><div class="alert-time">${getTimeAgo(a.timestamp)}${a.resolved ? ' • ✅ Решено' : ''}</div>${!a.resolved ? `<div class="alert-actions"><button class="btn-success" onclick="resolveAlert(${a.id})">✅ Решено</button></div>` : ''}</div></div>`).join('');
 }
 
 function resolveAlert(id) { const a = alerts.find(x => x.id === id); if (a) { a.resolved = true; localStorage.setItem('fa_alerts', JSON.stringify(alerts)); renderAlerts(); updateAlertBadge(); } }
-function blockUser(userId) { alert(`Пользователь ${userId} заблокирован (демо)`); }
 function clearAlerts() { if (confirm('Очистить все алерты?')) { alerts = []; localStorage.removeItem('fa_alerts'); renderAlerts(); updateAlertBadge(); } }
+
+function logView(media) {
+  viewLogs.unshift({ photoId: media.id, photoTitle: media.title, albumId: media.albumId, albumName: appData.albums.find(a => a.id === media.albumId)?.name || '', thumb: media.thumb, userId: CURRENT_USER.id, userName: CURRENT_USER.name, userUsername: CURRENT_USER.username, userRole: CURRENT_USER.role, timestamp: Date.now(), quality: CURRENT_USER.role === 'vip' ? 'original' : 'hd' });
+  if (viewLogs.length > 500) viewLogs = viewLogs.slice(0, 500);
+  localStorage.setItem('fa_logs', JSON.stringify(viewLogs));
+  checkAnomaly(media.id);
+}
 
 function renderStats() {
   document.getElementById('statTotalViews').textContent = viewLogs.length;
-  const users = new Set(viewLogs.map(l => l.userId));
-  document.getElementById('statTotalUsers').textContent = users.size;
+  document.getElementById('statTotalUsers').textContent = new Set(viewLogs.map(l => l.userId)).size;
+  document.getElementById('statTotalAlbums').textContent = appData.albums.length;
+  document.getElementById('statTotalMedia').textContent = appData.media.length;
+  
   const userStats = {};
   viewLogs.forEach(l => { if (!userStats[l.userId]) userStats[l.userId] = { name: l.userName, username: l.userUsername, views: 0, role: l.userRole }; userStats[l.userId].views++; });
   const topUsers = Object.values(userStats).sort((a, b) => b.views - a.views).slice(0, 5);
   const maxViews = topUsers[0]?.views || 1;
-  document.getElementById('topUsersList').innerHTML = topUsers.length === 0 ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>' : topUsers.map((u, i) => { const rank = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''; const pct = Math.round(u.views / maxViews * 100); const roleBadge = u.role === 'vip' ? ' 👑' : ''; return `<div class="stat-user-item"><div class="stat-rank ${rank}">${i + 1}</div><div class="stat-user-avatar">${u.name[0]}</div><div class="stat-user-info"><div class="name">${u.name}${roleBadge}</div><div class="detail">@${u.username}</div></div><div class="stat-bar-container"><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><div class="stat-bar-label">${u.views} 👁️</div></div></div>`; }).join('');
+  document.getElementById('topUsersList').innerHTML = topUsers.length === 0 ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>' : topUsers.map((u, i) => { const rank = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''; const pct = Math.round(u.views / maxViews * 100); return `<div class="stat-user-item"><div class="stat-rank ${rank}">${i + 1}</div><div class="stat-user-avatar">${u.name[0]}</div><div class="stat-user-info"><div class="name">${u.name}</div><div class="detail">@${u.username}</div></div><div class="stat-bar-container"><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><div class="stat-bar-label">${u.views} 👁️</div></div></div>`; }).join('');
+  
   const albumStats = {};
   viewLogs.forEach(l => { if (!albumStats[l.albumName]) albumStats[l.albumName] = { views: 0, users: new Set() }; albumStats[l.albumName].views++; albumStats[l.albumName].users.add(l.userId); });
   const topAlbums = Object.entries(albumStats).sort((a, b) => b[1].views - a[1].views).slice(0, 5);
-  const seeds = ['summer','newyear','birthday','grad','trip','wedding'];
-  document.getElementById('topAlbumsList').innerHTML = topAlbums.length === 0 ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>' : topAlbums.map(([name, data], i) => `<div class="stat-album-item"><div class="stat-album-thumb" style="background-image:url('https://picsum.photos/seed/${seeds[i] || 'x'}/100')"></div><div class="stat-album-info"><div class="name">${name}</div><div class="detail">${data.users.size} участников</div></div><div class="stat-album-views">${data.views} 👁️</div></div>`).join('');
+  document.getElementById('topAlbumsList').innerHTML = topAlbums.length === 0 ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>' : topAlbums.map(([name, data], i) => `<div class="stat-album-item"><div class="stat-album-info"><div class="name">${name}</div><div class="detail">${data.users.size} участников</div></div><div class="stat-album-views">${data.views} 👁️</div></div>`).join('');
+  
   const days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   const now = Date.now();
   const dayMs = 86400000;
   const weekData = days.map((_, i) => { const dayStart = now - (6 - i) * dayMs; const dayEnd = dayStart + dayMs; return viewLogs.filter(l => l.timestamp >= dayStart && l.timestamp < dayEnd).length; });
   const maxDay = Math.max(...weekData, 1);
   document.getElementById('weeklyChart').innerHTML = days.map((d, i) => { const h = Math.max(4, (weekData[i] / maxDay) * 80); return `<div class="bar-col"><div class="bar-value">${weekData[i]}</div><div class="bar" style="height:${h}px"></div><div class="bar-label">${d}</div></div>`; }).join('');
-}
-
-function logView(photoId) {
-  const photo = PHOTOS_DB[photoId];
-  if (!photo) return;
-  viewLogs.unshift({ photoId, photoTitle: photo.title, albumId: 'summer', albumName: photo.album, thumb: photo.thumb, userId: CURRENT_USER.id, userName: CURRENT_USER.name, userUsername: CURRENT_USER.username, userRole: CURRENT_USER.role, timestamp: Date.now(), quality: CURRENT_USER.role === 'vip' ? 'original' : 'hd' });
-  if (viewLogs.length > 500) viewLogs = viewLogs.slice(0, 500);
-  localStorage.setItem('fa_logs', JSON.stringify(viewLogs));
-  checkAnomaly(photoId);
-}
-
-function renderProtectedImage(canvas, url, quality) {
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = () => {
-    const mw = canvas.parentElement.clientWidth, mh = canvas.parentElement.clientHeight;
-    let w = img.width, h = img.height;
-    const max = quality === 'vip' ? 99999 : 1280;
-    const r = Math.min(mw/w, mh/h, max/Math.max(w,h));
-    canvas.width = w*r; canvas.height = h*r;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    addWatermark(ctx, canvas.width, canvas.height);
-    const b = document.getElementById('qualityBadge');
-    b.className = quality === 'vip' ? 'quality-badge original' : 'quality-badge hd';
-    b.innerHTML = quality === 'vip' ? ' Original' : '📺 HD 1280px';
-    showToast('🔒 Фото защищены');
-  };
-  img.onerror = () => { canvas.width=400; canvas.height=300; ctx.fillStyle='#1c1c1e'; ctx.fillRect(0,0,400,300); ctx.fillStyle='#fff'; ctx.font='16px sans-serif'; ctx.textAlign='center'; ctx.fillText('🔒 Защищено',200,150); };
-  img.src = url;
-}
-
-function addWatermark(ctx, w, h) {
-  ctx.save();
-  const t = `@${CURRENT_USER.username} • ${CURRENT_USER.id}`;
-  ctx.globalAlpha=0.12; ctx.font='bold 18px sans-serif'; ctx.fillStyle='#fff'; ctx.strokeStyle='#000'; ctx.lineWidth=1;
-  ctx.translate(w/2,h/2); ctx.rotate(-25*Math.PI/180);
-  for(let y=-h;y<h;y+=120) for(let x=-w;x<w;x+=350){ctx.strokeText(t,x,y);ctx.fillText(t,x,y);}
-  ctx.restore();
-  ctx.save(); ctx.globalAlpha=0.5; ctx.font='bold 11px sans-serif'; ctx.fillStyle='#fff'; ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.textAlign='right'; ctx.textBaseline='bottom';
-  ctx.strokeText(`🔒 ${t}`,w-10,h-10); ctx.fillText(`🔒 ${t}`,w-10,h-10); ctx.restore();
-}
-
-function showToast(msg, isAlert) {
-  const t = document.getElementById('protectionToast');
-  t.textContent = msg;
-  t.className = 'protection-toast show' + (isAlert ? ' alert' : '');
-  setTimeout(() => t.className = 'protection-toast', 3000);
-}
-
-function openPhoto(id, title) {
-  currentPhoto = {id, title};
-  logView(id);
-  document.getElementById('photoTitle').innerHTML = `📷 <strong>${title}</strong>`;
-  const v = viewLogs.filter(l=>l.photoId===id).length;
-  document.getElementById('viewCount').textContent = `👁️ Просмотров: ${v}`;
-  showScreen('viewer');
 }
 
 function renderLogs() {
@@ -1046,12 +1492,15 @@ function renderLogs() {
   const pc={}; viewLogs.forEach(l=>{if(!pc[l.photoId])pc[l.photoId]={c:0,t:l.photoTitle,th:l.thumb,a:l.albumName};pc[l.photoId].c++;});
   const top=Object.entries(pc).sort((a,b)=>b[1].c-a[1].c).slice(0,3);
   document.getElementById('topPhotosList').innerHTML=top.map(([id,d],i)=>{ const r=i===0?'gold':i===1?'silver':i===2?'bronze':''; return `<div class="top-photo-item"><div class="top-photo-rank ${r}">${i+1}</div><div class="top-photo-thumb" style="background-image:url('${d.th}')"></div><div class="top-photo-info"><div class="name">${d.t}</div><div class="album">${d.a}</div></div><div class="top-photo-views">${d.c}👁️</div></div>`; }).join('')||'<p style="color:var(--text-tertiary);text-align:center;padding:var(--space-4);font-size:var(--font-size-sm);">Нет данных</p>';
-  document.getElementById('logsList').innerHTML=f.slice(0,20).map(l=>`<div class="log-item"><div class="log-photo" style="background-image:url('${l.thumb}')"></div><div class="log-info"><div class="title">${l.photoTitle}</div><div class="meta"><span class="user">👤 ${l.userName}</span><span>${l.quality==='original'?'👑':'📺'}</span></div></div><div class="log-time">${getTimeAgo(l.timestamp)}</div></div>`).join('')||'<p style="text-align:center;padding:var(--space-8);color:var(--text-tertiary);">Пусто</p>';
+  document.getElementById('logsList').innerHTML=f.slice(0,20).map(l=>`<div class="log-item"><div class="log-photo" style="background-image:url('${l.thumb}')"></div><div class="log-info"><div class="title">${l.photoTitle}</div><div class="meta"><span class="user">👤 ${l.userName}</span></div></div><div class="log-time">${getTimeAgo(l.timestamp)}</div></div>`).join('')||'<p style="text-align:center;padding:var(--space-8);color:var(--text-tertiary);">Пусто</p>';
 }
 
 function filterLogs(f,el){currentFilter=f;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderLogs();}
 function getTimeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'только что';if(s<3600)return Math.floor(s/60)+' мин';if(s<86400)return Math.floor(s/3600)+' ч';return Math.floor(s/86400)+' дн';}
 
+// ============================================
+// 🎛️ НАВИГАЦИЯ И УТИЛИТЫ
+// ============================================
 function showConsent(){document.getElementById('consentOverlay').classList.remove('hidden');}
 function acceptConsent(){hasConsented=true;localStorage.setItem('fa_consent','true');document.getElementById('consentOverlay').classList.add('hidden');}
 function declineConsent(){alert('Доступ закрыт');}
@@ -1059,11 +1508,12 @@ function declineConsent(){alert('Доступ закрыт');}
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if(id==='viewer'&&currentPhoto){const c=document.getElementById('protectedCanvas');setTimeout(()=>renderProtectedImage(c,'https://picsum.photos/seed/'+currentPhoto.id+'/2000',CURRENT_USER.role==='vip'?'vip':'hd'),100);}
+  if(id==='viewer'&&currentPhoto){const c=document.getElementById('protectedCanvas');setTimeout(()=>renderProtectedImage(c,currentPhoto.url,CURRENT_USER.role==='vip'?'vip':'hd'),100);}
   if(id==='logs')renderLogs();
   if(id==='alerts')renderAlerts();
   if(id==='stats')renderStats();
-  if(id==='album')renderVideoCircles();
+  if(id==='admin')renderAdminAlbums();
+  if(id==='home')renderHome();
   if(id==='loading'){const b=document.querySelector('.loading-progress-bar');b.style.animation='none';setTimeout(()=>b.style.animation='',10);}
 }
 
@@ -1074,106 +1524,11 @@ document.getElementById('donateModal').addEventListener('click',e=>{if(e.target.
 
 function toggleTheme(){document.documentElement.classList.toggle('dark-mode');}
 
-// Видео-кружочки функции
-function openVideoUpload() {
-  document.getElementById('videoUploadModal').classList.add('active');
-  resetVideoUpload();
-}
-
-function closeVideoUpload() {
-  document.getElementById('videoUploadModal').classList.remove('active');
-  resetVideoUpload();
-}
-
-function resetVideoUpload() {
-  selectedVideoFile = null;
-  document.getElementById('videoPreview').style.display = 'none';
-  document.getElementById('uploadVideoBtn').style.display = 'none';
-  document.getElementById('uploadProgress').style.display = 'none';
-  document.getElementById('videoDescription').value = '';
-  document.getElementById('videoInput').value = '';
-  document.getElementById('galleryInput').value = '';
-}
-
-function startRecording() {
-  document.getElementById('videoInput').click();
-}
-
-function selectFromGallery() {
-  document.getElementById('galleryInput').click();
-}
-
-function handleVideoSelect(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 50 * 1024 * 1024) { alert('Файл слишком большой! Максимум 50 МБ.'); return; }
-  if (!file.type.startsWith('video/')) { alert('Пожалуйста, выберите видеофайл.'); return; }
-  selectedVideoFile = file;
-  const videoURL = URL.createObjectURL(file);
-  const previewVideo = document.getElementById('previewVideo');
-  previewVideo.src = videoURL;
-  document.getElementById('videoPreview').style.display = 'block';
-  document.getElementById('uploadVideoBtn').style.display = 'block';
-  previewVideo.play().catch(() => {});
-}
-
-function uploadVideo() {
-  if (!selectedVideoFile) return;
-  const description = document.getElementById('videoDescription').value;
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
-  const uploadProgress = document.getElementById('uploadProgress');
-  uploadProgress.style.display = 'block';
-  document.getElementById('uploadVideoBtn').disabled = true;
-  let progress = 0;
-  const interval = setInterval(() => {
-    progress += 10;
-    progressBar.style.width = progress + '%';
-    progressText.textContent = progress + '%';
-    if (progress >= 100) {
-      clearInterval(interval);
-      const videoData = {
-        id: 'video_' + Date.now(),
-        description: description,
-        timestamp: Date.now(),
-        userId: CURRENT_USER.id,
-        userName: CURRENT_USER.name,
-        albumId: 'summer',
-        albumName: 'Лето 2024',
-        fileName: selectedVideoFile.name
-      };
-      videoCircles.unshift(videoData);
-      localStorage.setItem('fa_video_circles', JSON.stringify(videoCircles));
-      setTimeout(() => {
-        closeVideoUpload();
-        showToast('✅ Кружочек загружен!');
-        renderVideoCircles();
-      }, 500);
-    }
-  }, 200);
-}
-
-function renderVideoCircles() {
-  const container = document.getElementById('videoCirclesContainer');
-  if (!container) return;
-  if (videoCircles.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--space-4); grid-column: 1/-1;">Пока нет кружочков</p>';
-    return;
-  }
-  container.innerHTML = videoCircles.map(video => `
-    <div style="text-align: center;">
-      <div class="video-circle" style="background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; font-size: 32px;" onclick="playVideoCircle('${video.id}')">
-        📹
-      </div>
-      <p style="font-size: var(--font-size-xs); color: var(--text-tertiary); margin-top: 4px;">${video.userName}</p>
-    </div>
-  `).join('');
-}
-
-function playVideoCircle(videoId) {
-  const video = videoCircles.find(v => v.id === videoId);
-  if (!video) return;
-  alert(`В демо-версии видео хранится локально. В реальной версии здесь будет воспроизведение видео: ${video.fileName || 'video.mp4'}`);
+function showToast(msg, isAlert) {
+  const t = document.getElementById('protectionToast');
+  t.textContent = msg;
+  t.className = 'protection-toast show' + (isAlert ? ' alert' : '');
+  setTimeout(() => t.className = 'protection-toast', 3000);
 }
 
 function initProtection(){
@@ -1182,16 +1537,30 @@ function initProtection(){
   document.addEventListener('dragstart',e=>{if(e.target.tagName==='CANVAS')e.preventDefault();});
 }
 
+// ============================================
+// 🚀 ИНИЦИАЛИЗАЦИЯ
+// ============================================
 document.addEventListener('DOMContentLoaded',()=>{
-  initProtection(); updateAlertBadge();
+  initProtection(); 
+  updateAlertBadge();
+  renderHome();
+  
   if(viewLogs.length===0){
-    const users=[{id:111,name:'Мама',username:'mama',role:'vip'},{id:222,name:'Сестра',username:'sister',role:'guest'},{id:333,name:'Дедушка',username:'grandpa',role:'vip'},{id:444,name:'Тётя Оля',username:'aunt_olya',role:'guest'},{id:555,name:'Дядя Петя',username:'uncle_petya',role:'guest'}];
-    const ids=Object.keys(PHOTOS_DB); const now=Date.now();
-    for(let i=0;i<40;i++){const u=users[Math.floor(Math.random()*users.length)];const pid=ids[Math.floor(Math.random()*ids.length)];const p=PHOTOS_DB[pid];
-      viewLogs.push({photoId:pid,photoTitle:p.title,albumId:'summer',albumName:p.album,thumb:p.thumb,userId:u.id,userName:u.name,userUsername:u.username,userRole:u.role,timestamp:now-Math.floor(Math.random()*7*86400000),quality:u.role==='vip'?'original':'hd'});}
-    viewLogs.sort((a,b)=>b.timestamp-a.timestamp);localStorage.setItem('fa_logs',JSON.stringify(viewLogs));
+    const users=[{id:111,name:'Мама',username:'mama',role:'vip'},{id:222,name:'Сестра',username:'sister',role:'guest'},{id:333,name:'Дедушка',username:'grandpa',role:'vip'}];
+    const mediaIds = appData.media.map(m => m.id);
+    const now=Date.now();
+    for(let i=0;i<20;i++){
+      const u=users[Math.floor(Math.random()*users.length)];
+      const mid=mediaIds[Math.floor(Math.random()*mediaIds.length)];
+      const m=appData.media.find(x=>x.id===mid);
+      if(m) viewLogs.push({photoId:m.id,photoTitle:m.title,albumId:m.albumId,albumName:appData.albums.find(a=>a.id===m.albumId)?.name||'',thumb:m.thumb,userId:u.id,userName:u.name,userUsername:u.username,userRole:u.role,timestamp:now-Math.floor(Math.random()*7*86400000),quality:u.role==='vip'?'original':'hd'});
+    }
+    viewLogs.sort((a,b)=>b.timestamp-a.timestamp);
+    localStorage.setItem('fa_logs',JSON.stringify(viewLogs));
   }
-  showScreen('loading');setTimeout(()=>{showScreen('home');if(!hasConsented)setTimeout(showConsent,500);},2500);
+  
+  showScreen('loading');
+  setTimeout(()=>{showScreen('home');if(!hasConsented)setTimeout(showConsent,500);},2500);
 });
 </script>
 </body>
