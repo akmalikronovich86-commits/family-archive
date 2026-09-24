@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Семейный Архив — TMA Full</title>
+<style>
+:root {
+  --color-primary: #2AABEE;
+  --color-primary-dark: #229ED9;
+  --color-accent: #FFD700;
+  --color-accent-dark: #FFA500;
+  --color-success: #34c759;
+  --color-danger: #ff3b30;
+  --color-warning: #ff9500;
+  --color-vip: #AF52DE;
+  --color-vip-dark: #8944AB;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #f2f2f7;
+  --bg-elevated: #ffffff;
+  --text-primary: #000000;
+  --text-secondary: #3c3c43;
+  --text-tertiary: #8e8e93;
+  --border-color: #e5e5ea;
+  --border-light: #f2f2f7;
+  --overlay: rgba(0,0,0,0.5);
+  --shadow: 0 2px 8px rgba(0,0,0,0.04);
+  --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 10px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 17px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 22px;
+  --font-size-3xl: 32px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px;
+  --radius-sm: 8px; --radius-md: 12px; --radius-lg: 14px;
+  --radius-xl: 16px; --radius-2xl: 20px; --radius-full: 50%;
+  --status-bar-height: 44px;
+  --notch-width: 100px; --notch-height: 28px;
+  --phone-border-radius: 40px; --phone-border: 10px;
+}
+.dark-mode {
+  --bg-primary: #1c1c1e; --bg-secondary: #000; --bg-tertiary: #2c2c2e;
+  --bg-elevated: #2c2c2e; --text-primary: #fff; --text-secondary: #ebebf5;
+  --text-tertiary: #8e8e93; --border-color: #3a3a3c; --border-light: #2c2c2e;
+  --overlay: rgba(0,0,0,0.7); --shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.android {
+  --status-bar-height: 24px; --notch-width: 0; --notch-height: 0;
+  --phone-border-radius: 20px; --phone-border: 8px;
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+  --radius-xl: 12px; --radius-2xl: 16px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+input,textarea { -webkit-user-select:text; user-select:text; }
+body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e,#16213e);
+  min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px; }
+.dark-mode body { background:linear-gradient(135deg,#0a0a0f,#000); }
+.phone-frame { width:390px; height:844px; background:var(--bg-primary);
+  border-radius:var(--phone-border-radius); overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5); position:relative;
+  border:var(--phone-border) solid #111; transition:all .3s; }
+.status-bar { height:var(--status-bar-height); background:var(--bg-primary);
+  display:flex; justify-content:space-between; align-items:center;
+  padding:0 var(--space-6); font-size:var(--font-size-md);
+  font-weight:var(--font-weight-semibold); position:relative; z-index:10;
+  color:var(--text-primary); }
+.status-bar::before { content:''; position:absolute; top:10px; left:50%;
+  transform:translateX(-50%); width:var(--notch-width); height:var(--notch-height);
+  background:#111; border-radius:var(--radius-full); }
+.android .status-bar { padding:0 var(--space-4); font-size:var(--font-size-sm); }
+.android .status-bar::before { display:none; }
+.android .status-bar .android-icons { display:flex; gap:var(--space-2); align-items:center; }
+.screen { display:none; flex-direction:column; height:calc(100% - var(--status-bar-height));
+  background:var(--bg-secondary); overflow-y:auto; }
+.screen.active { display:flex; }
+.screen::-webkit-scrollbar { display:none; }
+.header { background:var(--bg-elevated); padding:var(--space-3) var(--space-4);
+  display:flex; align-items:center; gap:var(--space-3);
+  border-bottom:1px solid var(--border-color); position:sticky; top:0; z-index:5; }
+.header h1 { font-size:var(--font-size-lg); font-weight:var(--font-weight-semibold);
+  flex:1; color:var(--text-primary); }
+.header .icon-btn { width:36px; height:36px; display:flex; align-items:center;
+  justify-content:center; background:var(--bg-tertiary); border-radius:var(--radius-full);
+  cursor:pointer; font-size:var(--font-size-base); position:relative; }
+.header .icon-btn:hover { background:var(--border-color); }
+.back-btn { background:none; border:none; font-size:24px; cursor:pointer; color:var(--color-primary); }
+.protection-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px;
+  background:rgba(52,199,89,0.15); color:var(--color-success);
+  border-radius:20px; font-size:var(--font-size-xs); font-weight:var(--font-weight-semibold); }
+.vip-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px;
+  background:linear-gradient(135deg,var(--color-vip),var(--color-vip-dark));
+  color:#fff; border-radius:20px; font-size:var(--font-size-xs); font-weight:var(--font-weight-bold); }
+.quality-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px;
+  border-radius:20px; font-size:var(--font-size-xs); font-weight:var(--font-weight-bold); }
+.quality-badge.hd { background:rgba(255,149,0,0.15); color:var(--color-warning); }
+.quality-badge.original { background:linear-gradient(135deg,var(--color-vip),var(--color-vip-dark)); color:#fff; }
+.alert-badge-count { position:absolute; top:-2px; right:-2px; background:var(--color-danger);
+  color:#fff; font-size:9px; font-weight:var(--font-weight-bold); min-width:16px; height:16px;
+  border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center;
+  padding:0 4px; border:2px solid var(--bg-elevated); }
+.bottom-nav { background:var(--bg-elevated); border-top:1px solid var(--border-color);
+  display:flex; padding:var(--space-2) 0 var(--space-5); position:sticky; bottom:0; }
+.nav-item { flex:1; display:flex; flex-direction:column; align-items:center;
+  gap:var(--space-1); padding:var(--space-2); cursor:pointer;
+  color:var(--text-tertiary); font-size:var(--font-size-xs); }
+.nav-item.active { color:var(--color-primary); }
+.nav-item .nav-icon { font-size:22px; }
+.welcome { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
+  color:#fff; padding:var(--space-5) var(--space-4); margin:var(--space-3);
+  border-radius:var(--radius-xl); }
+.welcome h2 { font-size:var(--font-size-xl); margin-bottom:var(--space-1); }
+.welcome p { font-size:var(--font-size-sm); opacity:0.9; }
+.search-bar { margin:0 var(--space-3) var(--space-3); background:var(--bg-elevated);
+  border-radius:var(--radius-md); padding:var(--space-3) var(--space-4);
+  display:flex; align-items:center; gap:var(--space-2);
+  color:var(--text-tertiary); font-size:var(--font-size-md); }
+.albums-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3);
+  padding:0 var(--space-3) var(--space-5); }
+.album-card { background:var(--bg-elevated); border-radius:var(--radius-lg);
+  overflow:hidden; cursor:pointer; transition:transform .2s; box-shadow:var(--shadow); }
+.album-card:hover { transform:translateY(-2px); }
+.album-cover { width:100%; height:120px; background-size:cover;
+  background-position:center; position:relative; }
+.album-cover::after { content:''; position:absolute; inset:0;
+  background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.4)); }
+.album-info { padding:var(--space-3); }
+.album-info h3 { font-size:var(--font-size-base); font-weight:var(--font-weight-semibold);
+  margin-bottom:var(--space-1); color:var(--text-primary); }
+.album-info p { font-size:var(--font-size-xs); color:var(--text-tertiary); }
+.album-hero { height:180px; background-size:cover; background-position:center;
+  position:relative; margin:var(--space-3); border-radius:var(--radius-xl); overflow:hidden; }
+.album-hero-info { position:absolute; bottom:0; left:0; right:0; padding:var(--space-4);
+  background:linear-gradient(to top,rgba(0,0,0,0.8),transparent); color:#fff; }
+.album-hero-info h2 { font-size:var(--font-size-xl); margin-bottom:var(--space-1); }
+.album-hero-info p { font-size:var(--font-size-sm); opacity:0.9; }
+.date-separator { padding:var(--space-2) var(--space-4); font-size:var(--font-size-sm);
+  color:var(--text-tertiary); font-weight:var(--font-weight-semibold); }
+.media-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; padding:0 2px 80px; }
+.media-item { aspect-ratio:1; background-size:cover; background-position:center;
+  cursor:pointer; position:relative; transition:opacity .2s; }
+.media-item:hover { opacity:0.85; }
+.media-item.video::after { content:'▶'; position:absolute; bottom:4px; right:4px;
+  background:rgba(0,0,0,0.7); color:#fff; width:22px; height:22px;
+  border-radius:var(--radius-full); display:flex; align-items:center;
+  justify-content:center; font-size:10px; padding-left:2px; }
+.sticky-bottom { position:sticky; bottom:0; background:var(--bg-elevated);
+  padding:var(--space-3) var(--space-4) var(--space-5); display:flex;
+  gap:var(--space-2); border-top:1px solid var(--border-color); }
+.btn { flex:1; padding:var(--space-3); border-radius:var(--radius-md); border:none;
+  font-size:var(--font-size-md); font-weight:var(--font-weight-semibold);
+  cursor:pointer; transition:opacity .2s; font-family:var(--font-family); }
+.btn:hover { opacity:0.85; }
+.btn-primary { background:var(--color-primary); color:#fff; }
+.btn-secondary { background:var(--bg-tertiary); color:var(--color-primary); }
+.btn-donate { background:linear-gradient(135deg,var(--color-accent),var(--color-accent-dark)); color:#fff; }
+.btn-danger { background:var(--color-danger); color:#fff; }
+.btn-success { background:var(--color-success); color:#fff; }
+.media-viewer { flex:1; background:#000; display:flex; align-items:center;
+  justify-content:center; position:relative; overflow:hidden; }
+.protected-canvas { max-width:100%; max-height:100%; display:block;
+  -webkit-user-drag:none; user-drag:none; }
+.viewer-header { position:absolute; top:0; left:0; right:0; padding:var(--space-3) var(--space-4);
+  background:linear-gradient(to bottom,rgba(0,0,0,0.6),transparent);
+  display:flex; justify-content:space-between; align-items:center; color:#fff; z-index:2; gap:var(--space-2); }
+.viewer-header button { background:rgba(255,255,255,0.2); border:none; color:#fff;
+  width:36px; height:36px; border-radius:var(--radius-full); cursor:pointer;
+  font-size:var(--font-size-base); flex-shrink:0; }
+.viewer-badges { display:flex; gap:var(--space-2); flex:1; justify-content:center; }
+.protection-overlay { position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+  background:rgba(0,0,0,0.7); color:#fff; padding:6px 12px; border-radius:20px;
+  font-size:var(--font-size-xs); display:flex; align-items:center; gap:6px;
+  backdrop-filter:blur(10px); z-index:3; pointer-events:none; }
+.media-meta { background:var(--bg-elevated); padding:var(--space-3) var(--space-4);
+  border-bottom:1px solid var(--border-color); font-size:var(--font-size-sm); color:var(--text-secondary); }
+.media-meta div { margin-bottom:var(--space-1); }
+.comments-section { background:var(--bg-elevated); padding:var(--space-3) var(--space-4); flex:1; }
+.comments-section h4 { font-size:var(--font-size-base); margin-bottom:var(--space-3); color:var(--text-primary); }
+.comment { display:flex; gap:var(--space-3); margin-bottom:var(--space-3); }
+.avatar { width:32px; height:32px; border-radius:var(--radius-full);
+  background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
+  display:flex; align-items:center; justify-content:center; color:#fff;
+  font-size:var(--font-size-sm); font-weight:var(--font-weight-semibold); flex-shrink:0; }
+.comment-body { flex:1; }
+.comment-author { font-size:var(--font-size-sm); font-weight:var(--font-weight-semibold);
+  margin-bottom:2px; color:var(--text-primary); }
+.comment-text { font-size:var(--font-size-base); color:var(--text-secondary); }
+.comment-input { background:var(--bg-elevated); padding:var(--space-3) var(--space-4) var(--space-5);
+  display:flex; gap:var(--space-2); border-top:1px solid var(--border-color); }
+.comment-input input { flex:1; padding:var(--space-3) var(--space-4);
+  border:1px solid var(--border-color); border-radius:var(--radius-2xl);
+  font-size:var(--font-size-base); outline:none; background:var(--bg-secondary); color:var(--text-primary); }
+.comment-input input:focus { border-color:var(--color-primary); }
+.comment-input button { background:var(--color-primary); color:#fff; border:none;
+  width:40px; height:40px; border-radius:var(--radius-full); cursor:pointer; font-size:var(--font-size-base); }
+.reactions-bar { background:var(--bg-elevated); padding:var(--space-3) var(--space-4);
+  display:flex; gap:var(--space-4); border-top:1px solid var(--border-color); font-size:var(--font-size-base); }
+.reaction { cursor:pointer; color:var(--text-tertiary); }
+.reaction:hover { color:var(--color-primary); }
+.reaction.liked { color:var(--color-danger); }
+.consent-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.85); z-index:200;
+  display:flex; align-items:center; justify-content:center; padding:var(--space-5);
+  backdrop-filter:blur(10px); }
+.consent-overlay.hidden { display:none; }
+.consent-modal { background:var(--bg-elevated); border-radius:var(--radius-2xl);
+  padding:var(--space-6); width:100%; max-width:340px; animation:slideUp .4s ease; }
+.consent-icon { font-size:56px; text-align:center; margin-bottom:var(--space-4); }
+.consent-modal h2 { font-size:var(--font-size-xl); text-align:center;
+  margin-bottom:var(--space-3); color:var(--text-primary); }
+.consent-text { font-size:var(--font-size-sm); color:var(--text-secondary);
+  line-height:1.5; margin-bottom:var(--space-4); text-align:center; }
+.consent-rules { background:var(--bg-tertiary); border-radius:var(--radius-md);
+  padding:var(--space-4); margin-bottom:var(--space-5); }
+.consent-rules li { font-size:var(--font-size-sm); color:var(--text-secondary);
+  margin-bottom:var(--space-2); margin-left:var(--space-5); line-height:1.4;
+  list-style:none; position:relative; }
+.consent-rules li::before { content:'✓'; position:absolute; left:-20px;
+  color:var(--color-success); font-weight:bold; }
+.consent-rules li.warning { color:var(--color-warning); }
+.consent-rules li.warning::before { content:'⚠'; color:var(--color-warning); }
+.consent-buttons { display:flex; gap:var(--space-2); }
+.consent-buttons .btn { padding:var(--space-3); }
+.protection-toast { position:absolute; top:calc(var(--status-bar-height) + 12px); left:50%;
+  transform:translateX(-50%) translateY(-100px); background:rgba(0,0,0,0.85); color:#fff;
+  padding:10px 16px; border-radius:20px; font-size:var(--font-size-sm);
+  display:flex; align-items:center; gap:8px; z-index:150;
+  backdrop-filter:blur(10px); transition:transform .4s ease; pointer-events:none; white-space:nowrap; }
+.protection-toast.show { transform:translateX(-50%) translateY(0); }
+.protection-toast.alert { background:rgba(255,59,48,0.9); }
+/* ===== 🚨 АЛЕРТЫ ===== */
+.alerts-summary { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-2); padding:var(--space-3); }
+.alert-stat { background:var(--bg-elevated); padding:var(--space-4); border-radius:var(--radius-md); text-align:center; }
+.alert-stat .num { font-size:var(--font-size-2xl); font-weight:var(--font-weight-bold); }
+.alert-stat .num.red { color:var(--color-danger); }
+.alert-stat .num.orange { color:var(--color-warning); }
+.alert-stat .label { font-size:var(--font-size-xs); color:var(--text-tertiary); margin-top:2px; }
+.alerts-list { padding:0 var(--space-3) var(--space-5); display:flex; flex-direction:column; gap:var(--space-2); }
+.alert-item { background:var(--bg-elevated); border-radius:var(--radius-md); padding:var(--space-3);
+  border-left:4px solid var(--color-warning); display:flex; gap:var(--space-3); align-items:flex-start; }
+.alert-item.critical { border-left-color:var(--color-danger); background:rgba(255,59,48,0.05); }
+.alert-item.resolved { border-left-color:var(--color-success); opacity:0.6; }
+.alert-icon { font-size:24px; flex-shrink:0; }
+.alert-body { flex:1; }
+.alert-title { font-size:var(--font-size-md); font-weight:var(--font-weight-semibold);
+  color:var(--text-primary); margin-bottom:2px; }
+.alert-desc { font-size:var(--font-size-sm); color:var(--text-secondary); margin-bottom:4px; line-height:1.4; }
+.alert-time { font-size:var(--font-size-xs); color:var(--text-tertiary); }
+.alert-actions { display:flex; gap:var(--space-2); margin-top:var(--space-2); }
+.alert-actions button { padding:4px 10px; border:none; border-radius:var(--radius-sm);
+  font-size:var(--font-size-xs); cursor:pointer; font-weight:var(--font-weight-semibold); }
+/* ===== 📈 СТАТИСТИКА ===== */
+.stats-hero { background:linear-gradient(135deg,var(--color-primary),var(--color-vip));
+  padding:var(--space-5) var(--space-4); margin:var(--space-3); border-radius:var(--radius-xl); color:#fff; }
+.stats-hero h3 { font-size:var(--font-size-lg); margin-bottom:var(--space-3); }
+.stats-hero-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-3); }
+.stats-hero-item { text-align:center; }
+.stats-hero-item .num { font-size:var(--font-size-2xl); font-weight:var(--font-weight-bold); }
+.stats-hero-item .label { font-size:var(--font-size-xs); opacity:0.85; }
+.stats-section { background:var(--bg-elevated); margin:0 var(--space-3) var(--space-3);
+  padding:var(--space-4); border-radius:var(--radius-md); }
+.stats-section h4 { font-size:var(--font-size-base); color:var(--text-primary);
+  margin-bottom:var(--space-3); display:flex; align-items:center; gap:var(--space-2); }
+.stat-user-item, .stat-album-item { display:flex; align-items:center; gap:var(--space-3);
+  padding:var(--space-2) 0; border-bottom:1px solid var(--border-light); }
+.stat-user-item:last-child, .stat-album-item:last-child { border-bottom:none; }
+.stat-rank { width:24px; height:24px; border-radius:var(--radius-full);
+  background:var(--bg-tertiary); display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--text-primary); flex-shrink:0; }
+.stat-rank.gold { background:linear-gradient(135deg,#FFD700,#FFA500); color:#fff; }
+.stat-rank.silver { background:linear-gradient(135deg,#C0C0C0,#A0A0A0); color:#fff; }
+.stat-rank.bronze { background:linear-gradient(135deg,#CD7F32,#A0522D); color:#fff; }
+.stat-user-avatar { width:36px; height:36px; border-radius:var(--radius-full);
+  background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
+  display:flex; align-items:center; justify-content:center; color:#fff;
+  font-size:var(--font-size-sm); font-weight:var(--font-weight-semibold); flex-shrink:0; }
+.stat-user-info { flex:1; }
+.stat-user-info .name { font-size:var(--font-size-md); font-weight:var(--font-weight-semibold); color:var(--text-primary); }
+.stat-user-info .detail { font-size:var(--font-size-xs); color:var(--text-tertiary); }
+.stat-bar-container { width:80px; flex-shrink:0; }
+.stat-bar { height:6px; background:var(--bg-tertiary); border-radius:3px; overflow:hidden; }
+.stat-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--color-primary),var(--color-vip)); }
+.stat-bar-label { font-size:var(--font-size-xs); color:var(--text-tertiary); text-align:right; margin-top:2px; }
+.stat-album-thumb { width:44px; height:44px; border-radius:var(--radius-sm);
+  background-size:cover; background-position:center; flex-shrink:0; }
+.stat-album-info { flex:1; }
+.stat-album-info .name { font-size:var(--font-size-md); font-weight:var(--font-weight-semibold); color:var(--text-primary); }
+.stat-album-info .detail { font-size:var(--font-size-xs); color:var(--text-tertiary); }
+.stat-album-views { font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--color-primary); }
+/* Bar chart */
+.bar-chart { display:flex; align-items:flex-end; gap:var(--space-2); height:100px; padding:var(--space-2) 0; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bar { width:100%; border-radius:4px 4px 0 0; background:linear-gradient(to top,var(--color-primary),var(--color-vip));
+  min-height:4px; transition:height .5s ease; }
+.bar-label { font-size:9px; color:var(--text-tertiary); }
+.bar-value { font-size:9px; color:var(--text-primary); font-weight:var(--font-weight-semibold); }
+/* Logs */
+.logs-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-2); padding:var(--space-3); }
+.log-stat-card { background:var(--bg-elevated); padding:var(--space-4) var(--space-3);
+  border-radius:var(--radius-md); text-align:center; }
+.log-stat-card .num { font-size:var(--font-size-xl); font-weight:var(--font-weight-bold); color:var(--color-primary); }
+.log-stat-card .label { font-size:var(--font-size-xs); color:var(--text-tertiary); margin-top:2px; }
+.logs-filters { padding:0 var(--space-3) var(--space-3); display:flex; gap:var(--space-2); overflow-x:auto; }
+.filter-chip { padding:6px 12px; background:var(--bg-elevated); border-radius:20px;
+  font-size:var(--font-size-sm); color:var(--text-secondary); cursor:pointer;
+  white-space:nowrap; border:1px solid var(--border-color); }
+.filter-chip.active { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
+.logs-list { padding:0 var(--space-3) var(--space-5); display:flex; flex-direction:column; gap:var(--space-2); }
+.log-item { background:var(--bg-elevated); padding:var(--space-3); border-radius:var(--radius-md);
+  display:flex; gap:var(--space-3); align-items:center; }
+.log-photo { width:56px; height:56px; border-radius:var(--radius-sm);
+  background-size:cover; background-position:center; flex-shrink:0; position:relative; }
+.log-photo::after { content:'👁️'; position:absolute; bottom:2px; right:2px;
+  background:rgba(0,0,0,0.7); color:#fff; font-size:10px; padding:2px 5px; border-radius:10px; }
+.log-info { flex:1; min-width:0; }
+.log-info .title { font-size:var(--font-size-md); font-weight:var(--font-weight-semibold);
+  color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.log-info .meta { font-size:var(--font-size-xs); color:var(--text-tertiary);
+  display:flex; gap:var(--space-2); align-items:center; flex-wrap:wrap; }
+.log-info .user { display:inline-flex; align-items:center; gap:4px;
+  color:var(--color-primary); font-weight:var(--font-weight-medium); }
+.log-time { font-size:var(--font-size-xs); color:var(--text-tertiary); text-align:right; flex-shrink:0; }
+.top-photos { background:var(--bg-elevated); margin:0 var(--space-3) var(--space-3);
+  padding:var(--space-4); border-radius:var(--radius-md); }
+.top-photos h4 { font-size:var(--font-size-base); color:var(--text-primary); margin-bottom:var(--space-3); }
+.top-photo-item { display:flex; align-items:center; gap:var(--space-3);
+  padding:var(--space-2) 0; border-bottom:1px solid var(--border-light); }
+.top-photo-item:last-child { border-bottom:none; }
+.top-photo-rank { width:24px; height:24px; border-radius:var(--radius-full);
+  background:var(--bg-tertiary); display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--text-primary); flex-shrink:0; }
+.top-photo-rank.gold { background:linear-gradient(135deg,#FFD700,#FFA500); color:#fff; }
+.top-photo-rank.silver { background:linear-gradient(135deg,#C0C0C0,#A0A0A0); color:#fff; }
+.top-photo-rank.bronze { background:linear-gradient(135deg,#CD7F32,#A0522D); color:#fff; }
+.top-photo-thumb { width:40px; height:40px; border-radius:var(--radius-sm);
+  background-size:cover; flex-shrink:0; }
+.top-photo-info { flex:1; }
+.top-photo-info .name { font-size:var(--font-size-sm); font-weight:var(--font-weight-semibold); color:var(--text-primary); }
+.top-photo-info .album { font-size:var(--font-size-xs); color:var(--text-tertiary); }
+.top-photo-views { font-size:var(--font-size-sm); font-weight:var(--font-weight-bold); color:var(--color-primary); }
+/* Profile */
+.profile-header { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
+  padding:var(--space-8) var(--space-5); text-align:center; color:#fff; }
+.profile-header.vip { background:linear-gradient(135deg,var(--color-vip),var(--color-vip-dark)); }
+.profile-avatar { width:80px; height:80px; border-radius:var(--radius-full);
+  background:rgba(255,255,255,0.3); margin:0 auto var(--space-3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-size-3xl); border:3px solid #fff; position:relative; }
+.profile-avatar .vip-crown { position:absolute; top:-8px; right:-8px; font-size:24px;
+  background:#fff; width:32px; height:32px; border-radius:var(--radius-full);
+  display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+.profile-header h2 { font-size:var(--font-size-xl); margin-bottom:var(--space-1); }
+.profile-header p { font-size:var(--font-size-sm); opacity:0.9; }
+.vip-card { background:linear-gradient(135deg,var(--color-vip),var(--color-vip-dark));
+  margin:var(--space-3); padding:var(--space-4); border-radius:var(--radius-lg); color:#fff;
+  display:flex; align-items:center; gap:var(--space-3); box-shadow:0 4px 16px rgba(175,82,222,0.3); }
+.vip-card .icon { font-size:32px; }
+.vip-card .info { flex:1; }
+.vip-card .info h4 { font-size:var(--font-size-md); margin-bottom:2px; }
+.vip-card .info p { font-size:var(--font-size-xs); opacity:0.9; }
+.vip-card .btn { background:rgba(255,255,255,0.25); color:#fff;
+  padding:var(--space-2) var(--space-4); font-size:var(--font-size-sm); flex-shrink:0; }
+.stats-block,.settings-block,.invite-block,.vip-perks { background:var(--bg-elevated);
+  margin:var(--space-3); border-radius:var(--radius-lg); overflow:hidden; }
+.vip-perks { padding:var(--space-4); }
+.vip-perks h4 { font-size:var(--font-size-base); margin-bottom:var(--space-3); color:var(--text-primary); }
+.vip-perk { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-2) 0;
+  font-size:var(--font-size-sm); color:var(--text-secondary); }
+.vip-perk .check { width:24px; height:24px; border-radius:var(--radius-full);
+  background:rgba(175,82,222,0.15); color:var(--color-vip);
+  display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+.block-title { padding:var(--space-3) var(--space-4) var(--space-2); font-size:var(--font-size-sm);
+  color:var(--text-tertiary); text-transform:uppercase; font-weight:var(--font-weight-semibold); }
+.stat-row,.setting-row { padding:var(--space-3) var(--space-4); display:flex;
+  justify-content:space-between; align-items:center;
+  border-bottom:1px solid var(--border-light); font-size:var(--font-size-md); color:var(--text-primary); }
+.stat-row:last-child,.setting-row:last-child { border-bottom:none; }
+.setting-row .left { display:flex; align-items:center; gap:var(--space-3); }
+.setting-row .right { color:var(--text-tertiary); font-size:var(--font-size-base); }
+.toggle { width:44px; height:26px; background:var(--border-color); border-radius:13px;
+  position:relative; cursor:pointer; transition:background .2s; }
+.toggle.on { background:var(--color-success); }
+.toggle::after { content:''; position:absolute; width:22px; height:22px; background:#fff;
+  border-radius:var(--radius-full); top:2px; left:2px; transition:transform .2s;
+  box-shadow:0 2px 4px rgba(0,0,0,0.2); }
+.toggle.on::after { transform:translateX(18px); }
+.invite-btn { margin:0 var(--space-4) var(--space-4); padding:var(--space-3);
+  background:var(--bg-tertiary); border-radius:var(--radius-sm); text-align:center;
+  color:var(--color-primary); font-weight:var(--font-weight-semibold); font-size:var(--font-size-md); cursor:pointer; }
+.logout-btn { margin:var(--space-3); padding:var(--space-4); background:var(--bg-elevated);
+  border-radius:var(--radius-lg); text-align:center; color:var(--color-danger);
+  font-weight:var(--font-weight-semibold); cursor:pointer; }
+.admin-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-2); padding:var(--space-3); }
+.stat-card { background:var(--bg-elevated); padding:var(--space-4) var(--space-3);
+  border-radius:var(--radius-md); text-align:center; }
+.stat-card .num { font-size:var(--font-size-xl); font-weight:var(--font-weight-bold); color:var(--color-primary); }
+.stat-card .label { font-size:var(--font-size-xs); color:var(--text-tertiary); margin-top:2px; }
+.admin-album { background:var(--bg-elevated); margin:0 var(--space-3) var(--space-2);
+  padding:var(--space-3); border-radius:var(--radius-md);
+  display:flex; gap:var(--space-3); align-items:center; }
+.admin-album-cover { width:60px; height:60px; border-radius:var(--radius-sm);
+  background-size:cover; flex-shrink:0; }
+.admin-album-info { flex:1; }
+.admin-album-info h4 { font-size:var(--font-size-md); margin-bottom:var(--space-1); color:var(--text-primary); }
+.admin-album-info p { font-size:var(--font-size-sm); color:var(--text-tertiary); }
+.admin-album-actions { display:flex; gap:var(--space-2); }
+.admin-album-actions button { padding:6px 10px; border:none; border-radius:var(--radius-sm);
+  font-size:var(--font-size-sm); cursor:pointer; }
+.btn-edit { background:rgba(42,171,238,0.15); color:var(--color-primary); }
+.btn-delete { background:rgba(255,59,48,0.15); color:var(--color-danger); }
+.form-group { background:var(--bg-elevated); margin:var(--space-2) var(--space-3);
+  padding:var(--space-4); border-radius:var(--radius-md); }
+.form-group label { display:block; font-size:var(--font-size-sm); color:var(--text-tertiary); margin-bottom:var(--space-2); }
+.form-group input,.form-group textarea { width:100%; border:none; outline:none;
+  font-size:var(--font-size-md); font-family:var(--font-family); resize:none;
+  background:transparent; color:var(--text-primary); }
+.form-group textarea { min-height:60px; }
+.upload-area { border:2px dashed var(--border-color); border-radius:var(--radius-md);
+  padding:var(--space-6); text-align:center; color:var(--text-tertiary);
+  cursor:pointer; margin:var(--space-2) var(--space-3); }
+.upload-area .icon { font-size:32px; margin-bottom:var(--space-2); }
+.radio-group { padding:var(--space-1) 0; }
+.radio-item { display:flex; align-items:center; padding:var(--space-3) 0;
+  cursor:pointer; font-size:var(--font-size-md); color:var(--text-primary); }
+.radio-item input { margin-right:var(--space-3); accent-color:var(--color-primary); }
+.form-actions { padding:var(--space-4) var(--space-3) var(--space-8); display:flex; gap:var(--space-2); }
+.loading-screen { background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:#fff; padding:var(--space-8); }
+.loading-logo { font-size:80px; margin-bottom:var(--space-6); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.1);opacity:0.8} }
+.loading-title { font-size:var(--font-size-2xl); font-weight:var(--font-weight-bold); margin-bottom:var(--space-2); }
+.loading-subtitle { font-size:var(--font-size-md); opacity:0.9; margin-bottom:var(--space-8); text-align:center; }
+.loading-spinner { width:48px; height:48px; border:4px solid rgba(255,255,255,0.3);
+  border-top-color:#fff; border-radius:var(--radius-full);
+  animation:spin 1s linear infinite; margin-bottom:var(--space-6); }
+@keyframes spin { to{transform:rotate(360deg)} }
+.loading-progress { width:100%; height:4px; background:rgba(255,255,255,0.3);
+  border-radius:2px; overflow:hidden; margin-bottom:var(--space-4); }
+.loading-progress-bar { height:100%; background:#fff; width:0%; animation:progress 3s ease-out forwards; }
+@keyframes progress { to{width:100%} }
+.loading-status { font-size:var(--font-size-sm); opacity:0.8; }
+.empty-state { flex:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; padding:var(--space-8); text-align:center; }
+.empty-icon { font-size:80px; margin-bottom:var(--space-5); opacity:0.5; }
+.empty-title { font-size:var(--font-size-xl); font-weight:var(--font-weight-semibold);
+  margin-bottom:var(--space-2); color:var(--text-primary); }
+.empty-text { font-size:var(--font-size-md); color:var(--text-tertiary);
+  margin-bottom:var(--space-6); max-width:280px; line-height:1.5; }
+.donations-summary { background:linear-gradient(135deg,var(--color-accent),var(--color-accent-dark));
+  padding:var(--space-6) var(--space-4); margin:var(--space-3); border-radius:var(--radius-xl);
+  color:#fff; text-align:center; }
+.donations-summary .total { font-size:36px; font-weight:var(--font-weight-bold); margin-bottom:var(--space-1); }
+.donations-summary .label { font-size:var(--font-size-sm); opacity:0.9; }
+.donations-list { padding:0 var(--space-3) var(--space-5); }
+.donation-item { background:var(--bg-elevated); padding:var(--space-4); border-radius:var(--radius-md);
+  margin-bottom:var(--space-2); display:flex; gap:var(--space-3); align-items:center; }
+.donation-icon { width:44px; height:44px; border-radius:var(--radius-full);
+  background:rgba(255,215,0,0.15); display:flex; align-items:center;
+  justify-content:center; font-size:20px; flex-shrink:0; }
+.donation-info { flex:1; }
+.donation-info .name { font-size:var(--font-size-md); font-weight:var(--font-weight-semibold);
+  color:var(--text-primary); margin-bottom:2px; }
+.donation-info .date { font-size:var(--font-size-sm); color:var(--text-tertiary); }
+.donation-amount { font-size:var(--font-size-md); font-weight:var(--font-weight-bold); color:var(--color-accent-dark); }
+.chat-header-info { display:flex; align-items:center; gap:var(--space-3); flex:1; }
+.chat-avatar { width:36px; height:36px; border-radius:var(--radius-full);
+  background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));
+  display:flex; align-items:center; justify-content:center; color:#fff;
+  font-weight:var(--font-weight-semibold); font-size:var(--font-size-base); }
+.chat-name { font-size:var(--font-size-md); font-weight:var(--font-weight-semibold); color:var(--text-primary); }
+.chat-status { font-size:var(--font-size-xs); color:var(--color-success); }
+.chat-messages { flex:1; padding:var(--space-4); overflow-y:auto;
+  background:var(--bg-secondary); display:flex; flex-direction:column; gap:var(--space-2); }
+.message { max-width:75%; padding:var(--space-2) var(--space-3); border-radius:var(--radius-lg);
+  font-size:var(--font-size-base); word-wrap:break-word; }
+.message.in { background:var(--bg-elevated); color:var(--text-primary);
+  align-self:flex-start; border-bottom-left-radius:var(--space-1); }
+.message.out { background:var(--color-primary); color:#fff;
+  align-self:flex-end; border-bottom-right-radius:var(--space-1); }
+.message-time { font-size:10px; opacity:0.6; margin-top:2px; display:block; }
+.message-author { font-size:var(--font-size-xs); font-weight:var(--font-weight-semibold);
+  color:var(--color-primary); margin-bottom:2px; display:block; }
+.message.out .message-author { color:rgba(255,255,255,0.8); }
+.chat-date-divider { text-align:center; font-size:var(--font-size-xs); color:var(--text-tertiary);
+  background:rgba(0,0,0,0.05); padding:var(--space-1) var(--space-3);
+  border-radius:var(--radius-full); align-self:center; margin:var(--space-2) 0; }
+.dark-mode .chat-date-divider { background:rgba(255,255,255,0.1); }
+.open-telegram-btn { margin:var(--space-3); padding:var(--space-3); background:var(--color-primary);
+  color:#fff; border-radius:var(--radius-md); text-align:center;
+  font-weight:var(--font-weight-semibold); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:var(--space-2); }
+.modal-overlay { display:none; position:absolute; inset:0; background:var(--overlay);
+  z-index:100; align-items:flex-end; }
+.modal-overlay.active { display:flex; }
+.modal { background:var(--bg-elevated); width:100%; border-radius:var(--radius-2xl) var(--radius-2xl) 0 0;
+  padding:var(--space-6) var(--space-5) var(--space-8); animation:slideUp .3s ease; }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-handle { width:40px; height:4px; background:var(--border-color);
+  border-radius:2px; margin:0 auto var(--space-5); }
+.modal h2 { font-size:var(--font-size-2xl); text-align:center; margin-bottom:var(--space-2); color:var(--text-primary); }
+.modal .subtitle { text-align:center; color:var(--text-tertiary);
+  font-size:var(--font-size-base); margin-bottom:var(--space-5); }
+.amount-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-2); margin-bottom:var(--space-4); }
+.amount-btn { padding:var(--space-3) var(--space-2); border:2px solid var(--border-color);
+  border-radius:var(--radius-md); background:var(--bg-primary); cursor:pointer;
+  text-align:center; transition:all .2s; }
+.amount-btn.selected { border-color:var(--color-primary); background:rgba(42,171,238,0.1); }
+.amount-btn .stars { font-size:18px; margin-bottom:2px; }
+.amount-btn .num { font-size:var(--font-size-base); font-weight:var(--font-weight-semibold); color:var(--text-primary); }
+.amount-btn .label { font-size:var(--font-size-xs); color:var(--text-tertiary); }
+.custom-amount { display:flex; align-items:center; gap:var(--space-2);
+  padding:var(--space-3) var(--space-4); border:1px solid var(--border-color);
+  border-radius:var(--radius-md); margin-bottom:var(--space-4); background:var(--bg-primary); }
+.custom-amount input { flex:1; border:none; outline:none; font-size:var(--font-size-md);
+  background:transparent; color:var(--text-primary); }
+.perks { background:var(--bg-tertiary); border-radius:var(--radius-md);
+  padding:var(--space-3) var(--space-4); margin-bottom:var(--space-4); font-size:var(--font-size-sm); }
+.perks h4 { font-size:var(--font-size-sm); margin-bottom:var(--space-2); color:var(--text-primary); }
+.perks li { margin-left:var(--space-4); margin-bottom:3px; color:var(--text-secondary); }
+.demo-nav { position:fixed; top:20px; right:20px; background:rgba(0,0,0,0.85); color:#fff;
+  padding:var(--space-4); border-radius:var(--radius-md); font-size:var(--font-size-sm);
+  max-width:260px; z-index:1000; max-height:90vh; overflow-y:auto; backdrop-filter:blur(10px); }
+.demo-nav h4 { margin-bottom:var(--space-3); font-size:var(--font-size-md); }
+.demo-nav .section-title { font-size:var(--font-size-xs); color:#8e8e93;
+  text-transform:uppercase; margin:var(--space-3) 0 var(--space-2); font-weight:var(--font-weight-semibold); }
+.demo-nav button { display:block; width:100%; padding:6px 10px; margin-bottom:4px;
+  background:var(--color-primary); color:#fff; border:none; border-radius:6px;
+  cursor:pointer; font-size:var(--font-size-sm); text-align:left; font-family:var(--font-family); }
+.demo-nav button:hover { background:var(--color-primary-dark); }
+.demo-nav .toggle-row { display:flex; justify-content:space-between;
+  align-items:center; padding:6px 0; font-size:var(--font-size-sm); }
+.demo-nav .toggle-row button { width:auto; padding:4px 10px; margin:0; }
+.role-indicator { display:inline-flex; align-items:center; gap:4px; padding:3px 8px;
+  border-radius:12px; font-size:var(--font-size-xs); font-weight:var(--font-weight-semibold); }
+.role-indicator.guest { background:rgba(142,142,147,0.2); color:var(--text-tertiary); }
+.role-indicator.vip { background:linear-gradient(135deg,var(--color-vip),var(--color-vip-dark)); color:#fff; }
+.protection-info { background:rgba(52,199,89,0.15); border:1px solid var(--color-success);
+  border-radius:var(--radius-sm); padding:var(--space-3); margin-top:var(--space-3);
+  font-size:var(--font-size-xs); color:var(--color-success); line-height:1.4; }
+.new-features-info { background:rgba(175,82,222,0.15); border:1px solid var(--color-vip);
+  border-radius:var(--radius-sm); padding:var(--space-3); margin-top:var(--space-2);
+  font-size:var(--font-size-xs); color:var(--color-vip); line-height:1.4; }
+</style>
+</head>
+<body>
+<div class="demo-nav">
+  <h4>📱 Семейный Архив 🔒</h4>
+  <div class="section-title">🎨 Тема / Платформа</div>
+  <div class="toggle-row"><span>🌙 Dark</span><button onclick="toggleTheme()" id="themeBtn">Вкл</button></div>
+  <div class="toggle-row"><span>🤖 Android</span><button onclick="togglePlatform()" id="platformBtn">Вкл</button></div>
+  <div class="section-title">👤 Роль</div>
+  <div class="toggle-row"><span>👑 VIP</span><button onclick="toggleRole()" id="roleBtn">Вкл</button></div>
+  <div style="padding:4px 0;font-size:var(--font-size-xs);color:#8e8e93;">
+    Роль: <span id="currentRole" class="role-indicator guest">👤 Гость</span>
+  </div>
+  <div class="section-title">⚡ Тест аномалии</div>
+  <button onclick="simulateAnomaly()" style="background:var(--color-danger);">🚨 Симулировать спам</button>
+  <div class="section-title">🖥️ Экраны</div>
+  <button onclick="showScreen('loading')">🔄 Загрузка</button>
+  <button onclick="showScreen('home')">🏠 Главная</button>
+  <button onclick="showScreen('album')">📷 Альбом</button>
+  <button onclick="showScreen('viewer')">🔍 Просмотр</button>
+  <button onclick="showScreen('chat')">💬 Чат</button>
+  <button onclick="showScreen('donations')">💰 Донаты</button>
+  <button onclick="showScreen('logs')">📋 Логи</button>
+  <button onclick="showScreen('alerts')">🚨 Алерты</button>
+  <button onclick="showScreen('stats')">📈 Статистика</button>
+  <button onclick="showScreen('profile')">👤 Профиль</button>
+  <button onclick="showScreen('admin')">⚙️ Админка</button>
+  <button onclick="showScreen('create')">➕ Новый альбом</button>
+  <div class="protection-info">🔒 Canvas + Watermark + Logs + Anomaly Detection</div>
+</div>
+
+<div class="phone-frame">
+  <div class="protection-toast" id="protectionToast">🔒 Фото защищены</div>
+  <div class="consent-overlay hidden" id="consentOverlay">
+    <div class="consent-modal">
+      <div class="consent-icon">🔒</div>
+      <h2>Условия доступа</h2>
+      <p class="consent-text">Приватный семейный архив. Ознакомьтесь с правилами:</p>
+      <ul class="consent-rules">
+        <li>Только личный просмотр</li>
+        <li>Запрет копирования и распространения</li>
+        <li>Фото содержат ваш ID</li>
+        <li class="warning">Аномальная активность фиксируется</li>
+      </ul>
+      <div class="consent-buttons">
+        <button class="btn btn-secondary" onclick="declineConsent()">Отклонить</button>
+        <button class="btn btn-primary" onclick="acceptConsent()">Принимаю</button>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span>9:41</span>
+    <span class="ios-icons">📶 📡 🔋</span>
+    <span class="android-icons" style="display:none;">📶 🔋 92%</span>
+  </div>
+
+  <!-- ЗАГРУЗКА -->
+  <div class="screen" id="loading">
+    <div class="loading-screen">
+      <div class="loading-logo">📸</div>
+      <div class="loading-title">Семейный Архив</div>
+      <div class="loading-subtitle">Сохраняем воспоминания ❤️</div>
+      <div class="loading-spinner"></div>
+      <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+      <div class="loading-status">Загрузка...</div>
+    </div>
+  </div>
+
+  <!-- ГЛАВНАЯ -->
+  <div class="screen" id="home">
+    <div class="header">
+      <h1>Семейный Архив</h1>
+      <div class="icon-btn" onclick="showScreen('alerts')" id="alertsBtn">🚨<span class="alert-badge-count" id="alertCount" style="display:none;">0</span></div>
+      <div class="icon-btn" onclick="showScreen('stats')">📈</div>
+      <div class="icon-btn" onclick="showScreen('profile')">👤</div>
+    </div>
+    <div class="welcome">
+      <h2>Добро пожаловать, Иван! 👋</h2>
+      <p>24 альбома • 1 247 фото • 89 видео</p>
+    </div>
+    <div class="search-bar">🔍 Поиск по альбомам...</div>
+    <div class="albums-grid">
+      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/summer/400/300')"></div><div class="album-info"><h3>Лето 2024</h3><p>156 фото • 12 видео</p></div></div>
+      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/newyear/400/300')"></div><div class="album-info"><h3>Новый Год</h3><p>89 фото • 5 видео</p></div></div>
+      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/birthday/400/300')"></div><div class="album-info"><h3>ДР Мамы</h3><p>78 фото • 3 видео</p></div></div>
+      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/grad/400/300')"></div><div class="album-info"><h3>Выпускной</h3><p>234 фото • 18 видео</p></div></div>
+      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/trip/400/300')"></div><div class="album-info"><h3>Горы</h3><p>112 фото • 7 видео</p></div></div>
+      <div class="album-card" onclick="showScreen('album')"><div class="album-cover" style="background-image:url('https://picsum.photos/seed/wedding/400/300')"></div><div class="album-info"><h3>Свадьба</h3><p>345 фото • 24 видео</p></div></div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="showScreen('home')"><div class="nav-icon">🏠</div><div>Главная</div></div>
+      <div class="nav-item" onclick="showScreen('stats')"><div class="nav-icon">📈</div><div>Статистика</div></div>
+      <div class="nav-item" onclick="openDonate()"><div class="nav-icon">💝</div><div>Донат</div></div>
+      <div class="nav-item" onclick="showScreen('profile')"><div class="nav-icon">⚙️</div><div>Профиль</div></div>
+    </div>
+  </div>
+
+  <!-- АЛЬБОМ -->
+  <div class="screen" id="album">
+    <div class="header">
+      <button class="back-btn" onclick="showScreen('home')">‹</button>
+      <h1>Лето 2024</h1>
+      <div class="protection-badge">🔒</div>
+      <div class="icon-btn" onclick="showScreen('chat')">💬</div>
+    </div>
+    <div class="album-hero" style="background-image:url('https://picsum.photos/seed/summer/800/400')"><div class="album-hero-info"><h2>Лето 2024 • Сочи</h2><p>156 фото • 12 видео</p></div></div>
+    <div class="date-separator">📅 12 июля 2024</div>
+    <div class="media-grid">
+      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p1/200')" onclick="openPhoto('photo_001','Пляж на закате')"></div>
+      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p2/200')" onclick="openPhoto('photo_002','Морские волны')"></div>
+      <div class="media-item video" style="background-image:url('https://picsum.photos/seed/v1/200')" onclick="openPhoto('video_001','Набережная')"></div>
+      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p3/200')" onclick="openPhoto('photo_003','Пальмы')"></div>
+      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p4/200')" onclick="openPhoto('photo_004','Порт')"></div>
+      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p5/200')" onclick="openPhoto('photo_005','Лодки')"></div>
+      <div class="media-item" style="background-image:url('https://picsum.photos/seed/p6/200')" onclick="openPhoto('photo_006','Горы')"></div>
+      <div class="media-item video" style="background-image:url('https://picsum.photos/seed/v2/200')" onclick="openPhoto('video_002','Купание')"></div>
+    </div>
+    <div class="sticky-bottom">
+      <button class="btn btn-secondary" onclick="showScreen('chat')">💬 Обсудить (24)</button>
+      <button class="btn btn-donate" onclick="openDonate()">💝 Задонатить</button>
+    </div>
+  </div>
+
+  <!-- ПРОСМОТР -->
+  <div class="screen" id="viewer">
+    <div class="media-viewer">
+      <div class="viewer-header">
+        <button onclick="showScreen('album')">✕</button>
+        <div class="viewer-badges">
+          <div class="protection-badge" style="background:rgba(255,255,255,0.2);color:#fff;">🔒</div>
+          <div id="qualityBadge" class="quality-badge hd">📺 HD 1280px</div>
+        </div>
+        <button>⋮</button>
+      </div>
+      <canvas id="protectedCanvas" class="protected-canvas"></canvas>
+      <div class="protection-overlay">🔒 Защищено водяным знаком</div>
+    </div>
+    <div class="media-meta">
+      <div id="photoTitle">📷 <strong>Пляж на закате</strong></div>
+      <div>📍 Сочи, пляж «Ривьера»</div>
+      <div>📅 12 июля 2024, 14:32</div>
+      <div id="viewCount">👁️ Просмотров: 0</div>
+    </div>
+    <div class="comments-section">
+      <h4>💬 Комментарии (3)</h4>
+      <div class="comment"><div class="avatar">М</div><div class="comment-body"><div class="comment-author">Мама</div><div class="comment-text">Какое чудо! 😍</div></div></div>
+      <div class="comment"><div class="avatar" style="background:linear-gradient(135deg,#ff6b6b,#ee5a6f)">С</div><div class="comment-body"><div class="comment-author">Сестра</div><div class="comment-text">Хочу туда ещё! 🏖️</div></div></div>
+    </div>
+    <div class="comment-input"><input type="text" placeholder="Комментарий..."><button>➤</button></div>
+    <div class="reactions-bar">
+      <div class="reaction liked">❤️ 12</div>
+      <div class="reaction" onclick="showScreen('chat')">💬 3</div>
+      <div class="reaction" onclick="openDonate()">💝 Донат</div>
+    </div>
+  </div>
+
+  <!-- 🚨 АЛЕРТЫ -->
+  <div class="screen" id="alerts">
+    <div class="header">
+      <button class="back-btn" onclick="showScreen('home')">‹</button>
+      <h1>🚨 Безопасность</h1>
+      <button class="btn btn-secondary" style="flex:0;padding:6px 12px;font-size:var(--font-size-xs);" onclick="clearAlerts()">Очистить</button>
+    </div>
+    <div class="alerts-summary">
+      <div class="alert-stat"><div class="num red" id="criticalCount">0</div><div class="label">🔴 Критических</div></div>
+      <div class="alert-stat"><div class="num orange" id="warningCount">0</div><div class="label">🟡 Предупреждений</div></div>
+    </div>
+    <div style="padding:var(--space-2) var(--space-3);font-size:var(--font-size-sm);color:var(--text-tertiary);font-weight:var(--font-weight-semibold);">📋 ПОСЛЕДНИЕ СОБЫТИЯ</div>
+    <div class="alerts-list" id="alertsList"></div>
+  </div>
+
+  <!-- 📈 СТАТИСТИКА -->
+  <div class="screen" id="stats">
+    <div class="header">
+      <button class="back-btn" onclick="showScreen('home')">‹</button>
+      <h1>📈 Семейная статистика</h1>
+    </div>
+    <div class="stats-hero">
+      <h3>Обзор архива</h3>
+      <div class="stats-hero-grid">
+        <div class="stats-hero-item"><div class="num" id="statTotalViews">0</div><div class="label">Просмотров</div></div>
+        <div class="stats-hero-item"><div class="num" id="statTotalUsers">0</div><div class="label">Участников</div></div>
+        <div class="stats-hero-item"><div class="num">24</div><div class="label">Альбомов</div></div>
+        <div class="stats-hero-item"><div class="num">1 336</div><div class="label">Фото и видео</div></div>
+      </div>
+    </div>
+    <div class="stats-section">
+      <h4>👑 Самые активные</h4>
+      <div id="topUsersList"></div>
+    </div>
+    <div class="stats-section">
+      <h4>📁 Популярные альбомы</h4>
+      <div id="topAlbumsList"></div>
+    </div>
+    <div class="stats-section">
+      <h4>📊 Активность за неделю</h4>
+      <div class="bar-chart" id="weeklyChart"></div>
+    </div>
+    <div style="height:var(--space-8);"></div>
+  </div>
+
+  <!-- ЛОГИ -->
+  <div class="screen" id="logs">
+    <div class="header">
+      <button class="back-btn" onclick="showScreen('admin')">‹</button>
+      <h1>Логи просмотров</h1>
+    </div>
+    <div class="logs-summary">
+      <div class="log-stat-card"><div class="num" id="totalViews">0</div><div class="label">👁️ Всего</div></div>
+      <div class="log-stat-card"><div class="num" id="uniqueUsers">0</div><div class="label">👥 Юзеров</div></div>
+      <div class="log-stat-card"><div class="num" id="todayViews">0</div><div class="label">📅 Сегодня</div></div>
+    </div>
+    <div class="top-photos"><h4>🏆 Топ фото</h4><div id="topPhotosList"></div></div>
+    <div class="logs-filters">
+      <div class="filter-chip active" onclick="filterLogs('all',this)">Все</div>
+      <div class="filter-chip" onclick="filterLogs('today',this)">Сегодня</div>
+      <div class="filter-chip" onclick="filterLogs('week',this)">Неделя</div>
+    </div>
+    <div class="logs-list" id="logsList"></div>
+  </div>
+
+  <!-- ЧАТ -->
+  <div class="screen" id="chat">
+    <div class="header"><button class="back-btn" onclick="showScreen('album')">‹</button><div class="chat-header-info"><div class="chat-avatar">Л</div><div><div class="chat-name">Лето 2024</div><div class="chat-status">● 5 онлайн</div></div></div></div>
+    <div class="chat-messages">
+      <div class="chat-date-divider">12 июля 2024</div>
+      <div class="message in"><span class="message-author">Мама</span>Смотрите фото! 😍<span class="message-time">14:35</span></div>
+      <div class="message out">Море потрясающее! 🌊<span class="message-time">14:38 ✓✓</span></div>
+      <div class="message in"><span class="message-author">Дедушка</span>Спасибо за архив ❤️<span class="message-time">14:40</span></div>
+    </div>
+    <div class="open-telegram-btn">💬 Открыть в Telegram</div>
+    <div class="comment-input"><input type="text" placeholder="Сообщение..."><button>➤</button></div>
+  </div>
+
+  <!-- ДОНАТЫ -->
+  <div class="screen" id="donations">
+    <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>История донатов</h1></div>
+    <div class="donations-summary"><div class="total">⭐ 2 450</div><div class="label">Всего Stars</div></div>
+    <div class="donations-list">
+      <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Мама</div><div class="date">Сегодня, 10:15</div></div><div class="donation-amount">+250 ⭐</div></div>
+      <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Дедушка</div><div class="date">Вчера, 14:20</div></div><div class="donation-amount">+500 ⭐</div></div>
+    </div>
+    <div style="padding:0 var(--space-3) var(--space-5);"><button class="btn btn-donate" style="width:100%;" onclick="openDonate()">💝 Поддержать</button></div>
+  </div>
+
+  <!-- ПРОФИЛЬ -->
+  <div class="screen" id="profile">
+    <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>Профиль</h1></div>
+    <div class="profile-header" id="profileHeader">
+      <div class="profile-avatar">И<div class="vip-crown" id="vipCrown" style="display:none;">👑</div></div>
+      <h2>Иван Иванов <span id="vipBadgeProfile" style="display:none;">👑</span></h2>
+      <p>@ivan_ivanov • с 01.01.2024</p>
+    </div>
+    <div class="vip-card" id="vipCard"><div class="icon">👑</div><div class="info"><h4>Станьте VIP</h4><p>Оригинальное качество фото</p></div><button class="btn" onclick="openDonate()">Получить</button></div>
+    <div class="stats-block"><div class="block-title">📊 Статистика</div>
+      <div class="stat-row"><span>👁️ Альбомов</span><strong>24</strong></div>
+      <div class="stat-row"><span>💝 Донатов</span><strong>500 ⭐</strong></div>
+    </div>
+    <div class="settings-block"><div class="block-title">⚙️ Настройки</div>
+      <div class="setting-row"><div class="left">🔔 Уведомления</div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="setting-row"><div class="left">🌙 Тёмная тема</div><div class="toggle" onclick="this.classList.toggle('on');toggleTheme()"></div></div>
+    </div>
+    <div class="logout-btn">🚪 Выйти</div>
+  </div>
+
+  <!-- АДМИНКА -->
+  <div class="screen" id="admin">
+    <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>Управление</h1></div>
+    <div style="padding:var(--space-3);display:flex;gap:var(--space-2);">
+      <button class="btn btn-primary" style="flex:2;" onclick="showScreen('create')">+ Альбом</button>
+      <button class="btn btn-secondary" onclick="showScreen('logs')">📋 Логи</button>
+      <button class="btn btn-danger" style="flex:0.7;" onclick="showScreen('alerts')">🚨</button>
+    </div>
+    <div class="admin-stats">
+      <div class="stat-card"><div class="num">2 450</div><div class="label">⭐ Stars</div></div>
+      <div class="stat-card"><div class="num">34</div><div class="label">👥 Гостей</div></div>
+      <div class="stat-card"><div class="num" id="adminViewsCount">0</div><div class="label">👁️ Просм.</div></div>
+    </div>
+  </div>
+
+  <!-- СОЗДАНИЕ -->
+  <div class="screen" id="create">
+    <div class="header"><button class="back-btn" onclick="showScreen('admin')">‹</button><h1>Новый альбом</h1></div>
+    <div class="form-group"><label>Название</label><input type="text" placeholder="Лето 2025"></div>
+    <div class="form-group"><label>Описание</label><textarea placeholder="О событии..."></textarea></div>
+    <div class="upload-area"><div class="icon">📷</div><div>Загрузить фото и видео</div></div>
+    <div class="form-actions"><button class="btn btn-primary">Создать</button><button class="btn btn-secondary" onclick="showScreen('admin')">Отмена</button></div>
+  </div>
+
+  <!-- ДОНАТ МОДАЛКА -->
+  <div class="modal-overlay" id="donateModal">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2>💝 Поддержка</h2>
+      <p class="subtitle">Цените воспоминания!</p>
+      <div class="amount-grid">
+        <div class="amount-btn" onclick="selectAmount(this,50)"><div class="stars">⭐</div><div class="num">50</div></div>
+        <div class="amount-btn selected" onclick="selectAmount(this,100)"><div class="stars">⭐⭐</div><div class="num">100</div></div>
+        <div class="amount-btn" onclick="selectAmount(this,250)"><div class="stars">⭐⭐⭐</div><div class="num">250</div></div>
+        <div class="amount-btn" onclick="selectAmount(this,500)"><div class="stars">⭐⭐⭐⭐</div><div class="num">500</div></div>
+      </div>
+      <div class="perks"><h4>💡 Бонусы:</h4><ul><li>👑 VIP и оригинальное качество</li><li>Ранний доступ к альбомам</li></ul></div>
+      <button class="btn btn-donate" style="width:100%;margin-bottom:var(--space-2);">💳 Оплатить 100 Stars</button>
+      <button class="btn btn-secondary" style="width:100%;" onclick="closeDonate()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CURRENT_USER = { id:123456789, username:'ivan_ivanov', name:'Иван Иванов', role:'guest' };
+let hasConsented = localStorage.getItem('fa_consent')==='true';
+let viewLogs = JSON.parse(localStorage.getItem('fa_logs')||'[]');
+let alerts = JSON.parse(localStorage.getItem('fa_alerts')||'[]');
+let currentPhoto = null, currentFilter = 'all';
+
+const PHOTOS_DB = {
+  'photo_001':{title:'Пляж на закате',album:'Лето 2024',thumb:'https://picsum.photos/seed/p1/100'},
+  'photo_002':{title:'Морские волны',album:'Лето 2024',thumb:'https://picsum.photos/seed/p2/100'},
+  'photo_003':{title:'Пальмы',album:'Лето 2024',thumb:'https://picsum.photos/seed/p3/100'},
+  'photo_004':{title:'Порт',album:'Лето 2024',thumb:'https://picsum.photos/seed/p4/100'},
+  'photo_005':{title:'Лодки',album:'Лето 2024',thumb:'https://picsum.photos/seed/p5/100'},
+  'photo_006':{title:'Горы',album:'Лето 2024',thumb:'https://picsum.photos/seed/p6/100'},
+  'video_001':{title:'Набережная',album:'Лето 2024',thumb:'https://picsum.photos/seed/v1/100'},
+  'video_002':{title:'Купание',album:'Лето 2024',thumb:'https://picsum.photos/seed/v2/100'}
+};
+
+/* ===== 🚨 СИСТЕМА ОБНАРУЖЕНИЯ АНОМАЛИЙ ===== */
+const ANOMALY_THRESHOLDS = {
+  userPerMinute: 10,    // >10 просмотров/мин от одного юзера
+  userPerMinuteCritical: 30, // >30 = критическое
+  totalPerMinute: 50,   // >50 суммарно/мин
+  rapidPhotos: 5        // >5 разных фото за 10 сек
+};
+
+function checkAnomaly(photoId) {
+  const now = Date.now();
+  const oneMinAgo = now - 60000;
+  const tenSecAgo = now - 10000;
+
+  // Просмотры текущего юзера за минуту
+  const userRecent = viewLogs.filter(l => l.userId === CURRENT_USER.id && l.timestamp > oneMinAgo);
+  
+  if (userRecent.length > ANOMALY_THRESHOLDS.userPerMinuteCritical) {
+    createAlert('critical', '🔴 Критическая активность',
+      `@${CURRENT_USER.username} сделал ${userRecent.length} просмотров за минуту! Возможный парсинг/скрейпинг.`,
+      CURRENT_USER.id, CURRENT_USER.name);
+  } else if (userRecent.length > ANOMALY_THRESHOLDS.userPerMinute) {
+    createAlert('warning', '🟡 Подозрительная активность',
+      `@${CURRENT_USER.username} — ${userRecent.length} просмотров за 60 сек. Порог: ${ANOMALY_THRESHOLDS.userPerMinute}.`,
+      CURRENT_USER.id, CURRENT_USER.name);
+  }
+
+  // Быстрое переключение фото (5+ за 10 сек)
+  const rapidViews = userRecent.filter(l => l.timestamp > tenSecAgo);
+  const uniquePhotos = new Set(rapidViews.map(l => l.photoId));
+  if (uniquePhotos.size > ANOMALY_THRESHOLDS.rapidPhotos) {
+    createAlert('critical', '🔴 Быстрое переключение фото',
+      `@${CURRENT_USER.username} открыл ${uniquePhotos.size} разных фото за 10 сек! Похоже на массовое скачивание.`,
+      CURRENT_USER.id, CURRENT_USER.name);
+  }
+
+  // Общая нагрузка
+  const totalRecent = viewLogs.filter(l => l.timestamp > oneMinAgo);
+  if (totalRecent.length > ANOMALY_THRESHOLDS.totalPerMinute) {
+    createAlert('warning', '🟡 Высокая нагрузка',
+      `Суммарно ${totalRecent.length} просмотров за минуту от всех пользователей.`,
+      null, 'Система');
+  }
+}
+
+function createAlert(level, title, desc, userId, userName) {
+  // Не дублировать одинаковые алерты за 30 сек
+  const recent = alerts.filter(a => a.title === title && Date.now() - a.timestamp < 30000);
+  if (recent.length > 0) return;
+
+  const alert = {
+    id: Date.now(),
+    level, title, desc, userId, userName,
+    timestamp: Date.now(),
+    resolved: false
+  };
+  alerts.unshift(alert);
+  if (alerts.length > 100) alerts = alerts.slice(0, 100);
+  localStorage.setItem('fa_alerts', JSON.stringify(alerts));
+  updateAlertBadge();
+  showToast(`🚨 ${title}`, true);
+}
+
+function updateAlertBadge() {
+  const unresolved = alerts.filter(a => !a.resolved);
+  const badge = document.getElementById('alertCount');
+  if (unresolved.length > 0) {
+    badge.style.display = 'flex';
+    badge.textContent = unresolved.length > 9 ? '9+' : unresolved.length;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderAlerts() {
+  const list = document.getElementById('alertsList');
+  const critical = alerts.filter(a => a.level === 'critical' && !a.resolved).length;
+  const warnings = alerts.filter(a => a.level === 'warning' && !a.resolved).length;
+  document.getElementById('criticalCount').textContent = critical;
+  document.getElementById('warningCount').textContent = warnings;
+
+  list.innerHTML = alerts.length === 0
+    ? '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-8);font-size:var(--font-size-sm);">✅ Всё спокойно. Аномалий не обнаружено.</p>'
+    : alerts.slice(0, 20).map(a => `
+      <div class="alert-item ${a.level} ${a.resolved ? 'resolved' : ''}">
+        <div class="alert-icon">${a.level === 'critical' ? '🔴' : '🟡'}</div>
+        <div class="alert-body">
+          <div class="alert-title">${a.title}</div>
+          <div class="alert-desc">${a.desc}</div>
+          <div class="alert-time">${getTimeAgo(a.timestamp)}${a.resolved ? ' • ✅ Решено' : ''}</div>
+          ${!a.resolved ? `<div class="alert-actions">
+            <button class="btn-success" onclick="resolveAlert(${a.id})">✅ Решено</button>
+            ${a.userId ? `<button class="btn-danger" onclick="blockUser(${a.userId})">🚫 Блок</button>` : ''}
+          </div>` : ''}
+        </div>
+      </div>
+    `).join('');
+}
+
+function resolveAlert(id) {
+  const a = alerts.find(x => x.id === id);
+  if (a) { a.resolved = true; localStorage.setItem('fa_alerts', JSON.stringify(alerts)); renderAlerts(); updateAlertBadge(); }
+}
+function blockUser(userId) {
+  alert(`Пользователь ${userId} заблокирован (демо)`);
+}
+function clearAlerts() {
+  if (confirm('Очистить все алерты?')) {
+    alerts = []; localStorage.removeItem('fa_alerts'); renderAlerts(); updateAlertBadge();
+  }
+}
+
+function simulateAnomaly() {
+  // Симулируем 15 быстрых просмотров
+  for (let i = 0; i < 15; i++) {
+    const ids = Object.keys(PHOTOS_DB);
+    const pid = ids[i % ids.length];
+    viewLogs.unshift({
+      photoId: pid, photoTitle: PHOTOS_DB[pid].title, albumId: 'summer',
+      albumName: 'Лето 2024', thumb: PHOTOS_DB[pid].thumb,
+      userId: CURRENT_USER.id, userName: CURRENT_USER.name,
+      userUsername: CURRENT_USER.username, userRole: CURRENT_USER.role,
+      timestamp: Date.now() - (15 - i) * 500, // каждые 500мс
+      quality: 'hd'
+    });
+  }
+  localStorage.setItem('fa_logs', JSON.stringify(viewLogs));
+  checkAnomaly('photo_001');
+  showScreen('alerts');
+}
+
+/* ===== 📈 СЕМЕЙНАЯ СТАТИСТИКА ===== */
+function renderStats() {
+  document.getElementById('statTotalViews').textContent = viewLogs.length;
+  const users = new Set(viewLogs.map(l => l.userId));
+  document.getElementById('statTotalUsers').textContent = users.size;
+
+  // Топ пользователей
+  const userStats = {};
+  viewLogs.forEach(l => {
+    if (!userStats[l.userId]) userStats[l.userId] = { name: l.userName, username: l.userUsername, views: 0, role: l.userRole };
+    userStats[l.userId].views++;
+  });
+  const topUsers = Object.values(userStats).sort((a, b) => b.views - a.views).slice(0, 5);
+  const maxViews = topUsers[0]?.views || 1;
+
+  document.getElementById('topUsersList').innerHTML = topUsers.length === 0
+    ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>'
+    : topUsers.map((u, i) => {
+      const rank = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+      const pct = Math.round(u.views / maxViews * 100);
+      const roleBadge = u.role === 'vip' ? ' 👑' : '';
+      return `<div class="stat-user-item">
+        <div class="stat-rank ${rank}">${i + 1}</div>
+        <div class="stat-user-avatar">${u.name[0]}</div>
+        <div class="stat-user-info"><div class="name">${u.name}${roleBadge}</div><div class="detail">@${u.username}</div></div>
+        <div class="stat-bar-container"><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><div class="stat-bar-label">${u.views} 👁️</div></div>
+      </div>`;
+    }).join('');
+
+  // Топ альбомов
+  const albumStats = {};
+  viewLogs.forEach(l => {
+    if (!albumStats[l.albumName]) albumStats[l.albumName] = { views: 0, users: new Set() };
+    albumStats[l.albumName].views++;
+    albumStats[l.albumName].users.add(l.userId);
+  });
+  const topAlbums = Object.entries(albumStats).sort((a, b) => b[1].views - a[1].views).slice(0, 5);
+  const seeds = ['summer','newyear','birthday','grad','trip','wedding'];
+
+  document.getElementById('topAlbumsList').innerHTML = topAlbums.length === 0
+    ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>'
+    : topAlbums.map(([name, data], i) => `<div class="stat-album-item">
+      <div class="stat-album-thumb" style="background-image:url('https://picsum.photos/seed/${seeds[i] || 'x'}/100')"></div>
+      <div class="stat-album-info"><div class="name">${name}</div><div class="detail">${data.users.size} участников</div></div>
+      <div class="stat-album-views">${data.views} 👁️</div>
+    </div>`).join('');
+
+  // График за неделю
+  const days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  const now = Date.now();
+  const dayMs = 86400000;
+  const weekData = days.map((_, i) => {
+    const dayStart = now - (6 - i) * dayMs;
+    const dayEnd = dayStart + dayMs;
+    return viewLogs.filter(l => l.timestamp >= dayStart && l.timestamp < dayEnd).length;
+  });
+  const maxDay = Math.max(...weekData, 1);
+
+  document.getElementById('weeklyChart').innerHTML = days.map((d, i) => {
+    const h = Math.max(4, (weekData[i] / maxDay) * 80);
+    return `<div class="bar-col"><div class="bar-value">${weekData[i]}</div><div class="bar" style="height:${h}px"></div><div class="bar-label">${d}</div></div>`;
+  }).join('');
+}
+
+/* ===== 📝 ЛОГИРОВАНИЕ ===== */
+function logView(photoId) {
+  const photo = PHOTOS_DB[photoId];
+  if (!photo) return;
+  viewLogs.unshift({
+    photoId, photoTitle: photo.title, albumId: 'summer', albumName: photo.album,
+    thumb: photo.thumb, userId: CURRENT_USER.id, userName: CURRENT_USER.name,
+    userUsername: CURRENT_USER.username, userRole: CURRENT_USER.role,
+    timestamp: Date.now(), quality: CURRENT_USER.role === 'vip' ? 'original' : 'hd'
+  });
+  if (viewLogs.length > 500) viewLogs = viewLogs.slice(0, 500);
+  localStorage.setItem('fa_logs', JSON.stringify(viewLogs));
+  checkAnomaly(photoId); // ← Проверка аномалий!
+}
+
+/* ===== 🖼️ CANVAS ===== */
+function renderProtectedImage(canvas, url, quality) {
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const mw = canvas.parentElement.clientWidth, mh = canvas.parentElement.clientHeight;
+    let w = img.width, h = img.height;
+    const max = quality === 'vip' ? 99999 : 1280;
+    const r = Math.min(mw/w, mh/h, max/Math.max(w,h));
+    canvas.width = w*r; canvas.height = h*r;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    addWatermark(ctx, canvas.width, canvas.height);
+    const b = document.getElementById('qualityBadge');
+    b.className = quality === 'vip' ? 'quality-badge original' : 'quality-badge hd';
+    b.innerHTML = quality === 'vip' ? '👑 Original' : '📺 HD 1280px';
+    showToast('🔒 Фото защищены');
+  };
+  img.onerror = () => { canvas.width=400; canvas.height=300; ctx.fillStyle='#1c1c1e'; ctx.fillRect(0,0,400,300); ctx.fillStyle='#fff'; ctx.font='16px sans-serif'; ctx.textAlign='center'; ctx.fillText('🔒 Защищено',200,150); };
+  img.src = url;
+}
+function addWatermark(ctx, w, h) {
+  ctx.save();
+  const t = `@${CURRENT_USER.username} • ${CURRENT_USER.id}`;
+  ctx.globalAlpha=0.12; ctx.font='bold 18px sans-serif'; ctx.fillStyle='#fff'; ctx.strokeStyle='#000'; ctx.lineWidth=1;
+  ctx.translate(w/2,h/2); ctx.rotate(-25*Math.PI/180);
+  for(let y=-h;y<h;y+=120) for(let x=-w;x<w;x+=350){ctx.strokeText(t,x,y);ctx.fillText(t,x,y);}
+  ctx.restore();
+  ctx.save(); ctx.globalAlpha=0.5; ctx.font='bold 11px sans-serif'; ctx.fillStyle='#fff'; ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.textAlign='right'; ctx.textBaseline='bottom';
+  ctx.strokeText(`🔒 ${t}`,w-10,h-10); ctx.fillText(`🔒 ${t}`,w-10,h-10); ctx.restore();
+}
+
+function showToast(msg, isAlert) {
+  const t = document.getElementById('protectionToast');
+  t.textContent = msg;
+  t.className = 'protection-toast show' + (isAlert ? ' alert' : '');
+  setTimeout(() => t.className = 'protection-toast', 3000);
+}
+
+function openPhoto(id, title) {
+  currentPhoto = {id, title};
+  logView(id);
+  document.getElementById('photoTitle').innerHTML = `📷 <strong>${title}</strong>`;
+  const v = viewLogs.filter(l=>l.photoId===id).length;
+  document.getElementById('viewCount').textContent = `👁️ Просмотров: ${v}`;
+  showScreen('viewer');
+}
+
+function renderLogs() {
+  const now = Date.now(), day = 86400000;
+  let f = [...viewLogs];
+  if (currentFilter==='today') f=f.filter(l=>now-l.timestamp<day);
+  else if (currentFilter==='week') f=f.filter(l=>now-l.timestamp<7*day);
+  document.getElementById('totalViews').textContent=viewLogs.length;
+  document.getElementById('uniqueUsers').textContent=new Set(viewLogs.map(l=>l.userId)).size;
+  document.getElementById('todayViews').textContent=viewLogs.filter(l=>now-l.timestamp<day).length;
+  const ac=document.getElementById('adminViewsCount'); if(ac) ac.textContent=viewLogs.length;
+  const pc={}; viewLogs.forEach(l=>{if(!pc[l.photoId])pc[l.photoId]={c:0,t:l.photoTitle,th:l.thumb,a:l.albumName};pc[l.photoId].c++;});
+  const top=Object.entries(pc).sort((a,b)=>b[1].c-a[1].c).slice(0,3);
+  document.getElementById('topPhotosList').innerHTML=top.map(([id,d],i)=>{
+    const r=i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    return `<div class="top-photo-item"><div class="top-photo-rank ${r}">${i+1}</div><div class="top-photo-thumb" style="background-image:url('${d.th}')"></div><div class="top-photo-info"><div class="name">${d.t}</div><div class="album">${d.a}</div></div><div class="top-photo-views">${d.c}👁️</div></div>`;
+  }).join('')||'<p style="color:var(--text-tertiary);text-align:center;padding:var(--space-4);font-size:var(--font-size-sm);">Нет данных</p>';
+  document.getElementById('logsList').innerHTML=f.slice(0,20).map(l=>`<div class="log-item"><div class="log-photo" style="background-image:url('${l.thumb}')"></div><div class="log-info"><div class="title">${l.photoTitle}</div><div class="meta"><span class="user">👤 ${l.userName}</span><span>${l.quality==='original'?'👑':'📺'}</span></div></div><div class="log-time">${getTimeAgo(l.timestamp)}</div></div>`).join('')||'<p style="text-align:center;padding:var(--space-8);color:var(--text-tertiary);">Пусто</p>';
+}
+function filterLogs(f,el){currentFilter=f;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderLogs();}
+function getTimeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'только что';if(s<3600)return Math.floor(s/60)+' мин';if(s<86400)return Math.floor(s/3600)+' ч';return Math.floor(s/86400)+' дн';}
+
+function showConsent(){document.getElementById('consentOverlay').classList.remove('hidden');}
+function acceptConsent(){hasConsented=true;localStorage.setItem('fa_consent','true');document.getElementById('consentOverlay').classList.add('hidden');}
+function declineConsent(){alert('Доступ закрыт');}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='viewer'&&currentPhoto){const c=document.getElementById('protectedCanvas');setTimeout(()=>renderProtectedImage(c,'https://picsum.photos/seed/'+currentPhoto.id+'/2000',CURRENT_USER.role==='vip'?'vip':'hd'),100);}
+  if(id==='logs')renderLogs();
+  if(id==='alerts')renderAlerts();
+  if(id==='stats')renderStats();
+  if(id==='loading'){const b=document.querySelector('.loading-progress-bar');b.style.animation='none';setTimeout(()=>b.style.animation='',10);}
+}
+
+function openDonate(){document.getElementById('donateModal').classList.add('active');}
+function closeDonate(){document.getElementById('donateModal').classList.remove('active');}
+function selectAmount(el,a){document.querySelectorAll('.amount-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');document.querySelector('.modal .btn-donate').textContent=`💳 ${a} Stars`;}
+document.getElementById('donateModal').addEventListener('click',e=>{if(e.target.id==='donateModal')closeDonate();});
+
+function toggleRole(){CURRENT_USER.role=CURRENT_USER.role==='vip'?'guest':'vip';document.getElementById('roleBtn').textContent=CURRENT_USER.role==='vip'?'Выкл':'Вкл';
+  const r=document.getElementById('currentRole');r.className='role-indicator '+(CURRENT_USER.role==='vip'?'vip':'guest');r.innerHTML=CURRENT_USER.role==='vip'?'👑 VIP':'👤 Гость';
+  const isV=CURRENT_USER.role==='vip';document.getElementById('profileHeader').classList.toggle('vip',isV);document.getElementById('vipCrown').style.display=isV?'flex':'none';
+  document.getElementById('vipBadgeProfile').style.display=isV?'inline':'none';document.getElementById('vipCard').style.display=isV?'none':'flex';}
+function toggleTheme(){document.documentElement.classList.toggle('dark-mode');const d=document.documentElement.classList.contains('dark-mode');document.getElementById('themeBtn').textContent=d?'Выкл':'Вкл';}
+function togglePlatform(){document.documentElement.classList.toggle('android');const a=document.documentElement.classList.contains('android');document.getElementById('platformBtn').textContent=a?'Выкл':'Вкл';document.querySelector('.ios-icons').style.display=a?'none':'inline';document.querySelector('.android-icons').style.display=a?'flex':'none';}
+
+function initProtection(){
+  document.addEventListener('contextmenu',e=>{e.preventDefault();showToast('🔒 Запрещено');});
+  document.addEventListener('keydown',e=>{if(e.ctrlKey&&['s','p','u'].includes(e.key.toLowerCase()))e.preventDefault();});
+  document.addEventListener('dragstart',e=>{if(e.target.tagName==='CANVAS')e.preventDefault();});
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  initProtection(); updateAlertBadge();
+  if(viewLogs.length===0){
+    const users=[{id:111,name:'Мама',username:'mama',role:'vip'},{id:222,name:'Сестра',username:'sister',role:'guest'},{id:333,name:'Дедушка',username:'grandpa',role:'vip'},{id:444,name:'Тётя Оля',username:'aunt_olya',role:'guest'},{id:555,name:'Дядя Петя',username:'uncle_petya',role:'guest'}];
+    const ids=Object.keys(PHOTOS_DB); const now=Date.now();
+    for(let i=0;i<40;i++){const u=users[Math.floor(Math.random()*users.length)];const pid=ids[Math.floor(Math.random()*ids.length)];const p=PHOTOS_DB[pid];
+      viewLogs.push({photoId:pid,photoTitle:p.title,albumId:'summer',albumName:p.album,thumb:p.thumb,userId:u.id,userName:u.name,userUsername:u.username,userRole:u.role,timestamp:now-Math.floor(Math.random()*7*86400000),quality:u.role==='vip'?'original':'hd'});}
+    viewLogs.sort((a,b)=>b.timestamp-a.timestamp);localStorage.setItem('fa_logs',JSON.stringify(viewLogs));
+  }
+  showScreen('loading');setTimeout(()=>{showScreen('home');if(!hasConsented)setTimeout(showConsent,500);},2500);
+});
+</script>
+</body>
+</html>
