@@ -136,7 +136,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
 .album-hero-info p { font-size:var(--font-size-sm); opacity:0.9; }
 .date-separator { padding:var(--space-2) var(--space-4); font-size:var(--font-size-sm);
   color:var(--text-tertiary); font-weight:var(--font-weight-semibold); }
-.media-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; padding:0 2px 80px; }
+.media-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; padding:0 2px; }
 .media-item { aspect-ratio:1; background-size:cover; background-position:center;
   cursor:pointer; position:relative; transition:opacity .2s; }
 .media-item:hover { opacity:0.85; }
@@ -151,6 +151,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   font-size:var(--font-size-md); font-weight:var(--font-weight-semibold);
   cursor:pointer; transition:opacity .2s; font-family:var(--font-family); }
 .btn:hover { opacity:0.85; }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
 .btn-primary { background:var(--color-primary); color:#fff; }
 .btn-secondary { background:var(--bg-tertiary); color:var(--color-primary); }
 .btn-donate { background:linear-gradient(135deg,var(--color-accent),var(--color-accent-dark)); color:#fff; }
@@ -505,6 +506,53 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   padding:var(--space-3) var(--space-4); margin-bottom:var(--space-4); font-size:var(--font-size-sm); }
 .perks h4 { font-size:var(--font-size-sm); margin-bottom:var(--space-2); color:var(--text-primary); }
 .perks li { margin-left:var(--space-4); margin-bottom:3px; color:var(--text-secondary); }
+
+/* Видео-кружочки */
+.video-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.video-circle:hover { transform: scale(1.05); }
+.circles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+.circle-viewer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+.circle-viewer video {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 50%;
+  border: 4px solid #fff;
+}
+.circle-viewer .close-btn {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -529,7 +577,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   </div>
   <div class="status-bar">
     <span>9:41</span>
-    <span>📶 📡 🔋</span>
+    <span> 📡 🔋</span>
   </div>
 
   <!-- ЗАГРУЗКА -->
@@ -567,7 +615,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     </div>
     <div class="bottom-nav">
       <div class="nav-item active" onclick="showScreen('home')"><div class="nav-icon">🏠</div><div>Главная</div></div>
-      <div class="nav-item" onclick="showScreen('stats')"><div class="nav-icon">📈</div><div>Статистика</div></div>
+      <div class="nav-item" onclick="showScreen('stats')"><div class="nav-icon"></div><div>Статистика</div></div>
       <div class="nav-item" onclick="openDonate()"><div class="nav-icon">💝</div><div>Донат</div></div>
       <div class="nav-item" onclick="showScreen('profile')"><div class="nav-icon">⚙️</div><div>Профиль</div></div>
     </div>
@@ -579,10 +627,14 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <button class="back-btn" onclick="showScreen('home')">‹</button>
       <h1>Лето 2024</h1>
       <div class="protection-badge">🔒</div>
-      <div class="icon-btn" onclick="showScreen('chat')"></div>
+      <div class="icon-btn" onclick="showScreen('chat')">💬</div>
     </div>
     <div class="album-hero" style="background-image:url('https://picsum.photos/seed/summer/800/400')"><div class="album-hero-info"><h2>Лето 2024 • Сочи</h2><p>156 фото • 12 видео</p></div></div>
-    <div class="date-separator"> 12 июля 2024</div>
+    <div style="padding: var(--space-3); display: flex; gap: var(--space-2);">
+      <button class="btn btn-primary" onclick="openVideoUpload()">📹 Загрузить кружочек</button>
+      <button class="btn btn-secondary" onclick="showToast('📷 Загрузка фото скоро будет доступна')">📷 Фото</button>
+    </div>
+    <div class="date-separator">📅 12 июля 2024</div>
     <div class="media-grid">
       <div class="media-item" style="background-image:url('https://picsum.photos/seed/p1/200')" onclick="openPhoto('photo_001','Пляж на закате')"></div>
       <div class="media-item" style="background-image:url('https://picsum.photos/seed/p2/200')" onclick="openPhoto('photo_002','Морские волны')"></div>
@@ -592,6 +644,10 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div class="media-item" style="background-image:url('https://picsum.photos/seed/p5/200')" onclick="openPhoto('photo_005','Лодки')"></div>
       <div class="media-item" style="background-image:url('https://picsum.photos/seed/p6/200')" onclick="openPhoto('photo_006','Горы')"></div>
       <div class="media-item video" style="background-image:url('https://picsum.photos/seed/v2/200')" onclick="openPhoto('video_002','Купание')"></div>
+    </div>
+    <div style="padding: var(--space-3); border-top: 1px solid var(--border-color);">
+      <h3 style="font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-3);">📹 Кружочки от семьи</h3>
+      <div id="videoCirclesContainer" class="circles-grid"></div>
     </div>
     <div class="sticky-bottom">
       <button class="btn btn-secondary" onclick="showScreen('chat')">💬 Обсудить (24)</button>
@@ -605,29 +661,29 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div class="viewer-header">
         <button onclick="showScreen('album')">✕</button>
         <div class="viewer-badges">
-          <div class="protection-badge" style="background:rgba(255,255,255,0.2);color:#fff;"></div>
+          <div class="protection-badge" style="background:rgba(255,255,255,0.2);color:#fff;">🔒</div>
           <div id="qualityBadge" class="quality-badge hd">📺 HD 1280px</div>
         </div>
         <button>⋮</button>
       </div>
       <canvas id="protectedCanvas" class="protected-canvas"></canvas>
-      <div class="protection-overlay">🔒 Защищено водяным знаком</div>
+      <div class="protection-overlay"> Защищено водяным знаком</div>
     </div>
     <div class="media-meta">
       <div id="photoTitle">📷 <strong>Пляж на закате</strong></div>
       <div>📍 Сочи, пляж «Ривьера»</div>
       <div>📅 12 июля 2024, 14:32</div>
-      <div id="viewCount">👁️ Просмотров: 0</div>
+      <div id="viewCount">️ Просмотров: 0</div>
     </div>
     <div class="comments-section">
       <h4>💬 Комментарии (3)</h4>
-      <div class="comment"><div class="avatar">М</div><div class="comment-body"><div class="comment-author">Мама</div><div class="comment-text">Какое чудо! 😍</div></div></div>
+      <div class="comment"><div class="avatar">М</div><div class="comment-body"><div class="comment-author">Мама</div><div class="comment-text">Какое чудо! </div></div></div>
       <div class="comment"><div class="avatar" style="background:linear-gradient(135deg,#ff6b6b,#ee5a6f)">С</div><div class="comment-body"><div class="comment-author">Сестра</div><div class="comment-text">Хочу туда ещё! 🏖️</div></div></div>
     </div>
     <div class="comment-input"><input type="text" placeholder="Комментарий..."><button>➤</button></div>
     <div class="reactions-bar">
       <div class="reaction liked">❤️ 12</div>
-      <div class="reaction" onclick="showScreen('chat')">💬 3</div>
+      <div class="reaction" onclick="showScreen('chat')"> 3</div>
       <div class="reaction" onclick="openDonate()">💝 Донат</div>
     </div>
   </div>
@@ -663,7 +719,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       </div>
     </div>
     <div class="stats-section">
-      <h4> Самые активные</h4>
+      <h4>👑 Самые активные</h4>
       <div id="topUsersList"></div>
     </div>
     <div class="stats-section">
@@ -671,7 +727,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div id="topAlbumsList"></div>
     </div>
     <div class="stats-section">
-      <h4>📊 Активность за неделю</h4>
+      <h4> Активность за неделю</h4>
       <div class="bar-chart" id="weeklyChart"></div>
     </div>
     <div style="height:var(--space-8);"></div>
@@ -684,11 +740,11 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <h1>Логи просмотров</h1>
     </div>
     <div class="logs-summary">
-      <div class="log-stat-card"><div class="num" id="totalViews">0</div><div class="label">👁️ Всего</div></div>
+      <div class="log-stat-card"><div class="num" id="totalViews">0</div><div class="label">️ Всего</div></div>
       <div class="log-stat-card"><div class="num" id="uniqueUsers">0</div><div class="label">👥 Юзеров</div></div>
       <div class="log-stat-card"><div class="num" id="todayViews">0</div><div class="label">📅 Сегодня</div></div>
     </div>
-    <div class="top-photos"><h4>🏆 Топ фото</h4><div id="topPhotosList"></div></div>
+    <div class="top-photos"><h4> Топ фото</h4><div id="topPhotosList"></div></div>
     <div class="logs-filters">
       <div class="filter-chip active" onclick="filterLogs('all',this)">Все</div>
       <div class="filter-chip" onclick="filterLogs('today',this)">Сегодня</div>
@@ -715,7 +771,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>История донатов</h1></div>
     <div class="donations-summary"><div class="total">⭐ 2 450</div><div class="label">Всего Stars</div></div>
     <div class="donations-list">
-      <div class="donation-item"><div class="donation-icon"></div><div class="donation-info"><div class="name">Мама</div><div class="date">Сегодня, 10:15</div></div><div class="donation-amount">+250 ⭐</div></div>
+      <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Мама</div><div class="date">Сегодня, 10:15</div></div><div class="donation-amount">+250 ⭐</div></div>
       <div class="donation-item"><div class="donation-icon">💝</div><div class="donation-info"><div class="name">Дедушка</div><div class="date">Вчера, 14:20</div></div><div class="donation-amount">+500 ⭐</div></div>
     </div>
     <div style="padding:0 var(--space-3) var(--space-5);"><button class="btn btn-donate" style="width:100%;" onclick="openDonate()">💝 Поддержать</button></div>
@@ -734,9 +790,9 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
       <div class="stat-row"><span>👁️ Альбомов</span><strong>24</strong></div>
       <div class="stat-row"><span>💝 Донатов</span><strong>500 ⭐</strong></div>
     </div>
-    <div class="settings-block"><div class="block-title">⚙️ Настройки</div>
+    <div class="settings-block"><div class="block-title">️ Настройки</div>
       <div class="setting-row"><div class="left">🔔 Уведомления</div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-      <div class="setting-row"><div class="left"> Тёмная тема</div><div class="toggle" onclick="this.classList.toggle('on');toggleTheme()"></div></div>
+      <div class="setting-row"><div class="left">🌙 Тёмная тема</div><div class="toggle" onclick="this.classList.toggle('on');toggleTheme()"></div></div>
     </div>
     <div class="logout-btn">🚪 Выйти</div>
   </div>
@@ -746,7 +802,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     <div class="header"><button class="back-btn" onclick="showScreen('home')">‹</button><h1>Управление</h1></div>
     <div style="padding:var(--space-3);display:flex;gap:var(--space-2);">
       <button class="btn btn-primary" style="flex:2;" onclick="showScreen('create')">+ Альбом</button>
-      <button class="btn btn-secondary" onclick="showScreen('logs')">📋 Логи</button>
+      <button class="btn btn-secondary" onclick="showScreen('logs')"> Логи</button>
       <button class="btn btn-danger" style="flex:0.7;" onclick="showScreen('alerts')">🚨</button>
     </div>
     <div class="admin-stats">
@@ -761,7 +817,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
     <div class="header"><button class="back-btn" onclick="showScreen('admin')">‹</button><h1>Новый альбом</h1></div>
     <div class="form-group"><label>Название</label><input type="text" placeholder="Лето 2025"></div>
     <div class="form-group"><label>Описание</label><textarea placeholder="О событии..."></textarea></div>
-    <div class="upload-area"><div class="icon"></div><div>Загрузить фото и видео</div></div>
+    <div class="upload-area"><div class="icon">📷</div><div>Загрузить фото и видео</div></div>
     <div class="form-actions"><button class="btn btn-primary">Создать</button><button class="btn btn-secondary" onclick="showScreen('admin')">Отмена</button></div>
   </div>
 
@@ -769,7 +825,7 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
   <div class="modal-overlay" id="donateModal">
     <div class="modal">
       <div class="modal-handle"></div>
-      <h2> Поддержка</h2>
+      <h2>💝 Поддержка</h2>
       <p class="subtitle">Цените воспоминания!</p>
       <div class="amount-grid">
         <div class="amount-btn" onclick="selectAmount(this,50)"><div class="stars">⭐</div><div class="num">50</div></div>
@@ -777,9 +833,50 @@ body { font-family:var(--font-family); background:linear-gradient(135deg,#1a1a2e
         <div class="amount-btn" onclick="selectAmount(this,250)"><div class="stars">⭐⭐⭐</div><div class="num">250</div></div>
         <div class="amount-btn" onclick="selectAmount(this,500)"><div class="stars">⭐⭐⭐⭐</div><div class="num">500</div></div>
       </div>
-      <div class="perks"><h4>💡 Бонусы:</h4><ul><li> VIP и оригинальное качество</li><li>Ранний доступ к альбомам</li></ul></div>
+      <div class="perks"><h4>💡 Бонусы:</h4><ul><li>👑 VIP и оригинальное качество</li><li>Ранний доступ к альбомам</li></ul></div>
       <button class="btn btn-donate" style="width:100%;margin-bottom:var(--space-2);">💳 Оплатить 100 Stars</button>
       <button class="btn btn-secondary" style="width:100%;" onclick="closeDonate()">Отмена</button>
+    </div>
+  </div>
+
+  <!-- ВИДЕО ЗАГРУЗКА МОДАЛКА -->
+  <div class="modal-overlay" id="videoUploadModal">
+    <div class="modal" style="max-height: 90vh; overflow-y: auto;">
+      <div class="modal-handle"></div>
+      <h2>📹 Загрузить кружочек</h2>
+      <p class="subtitle">Запишите новое видео или выберите из галереи</p>
+
+      <div style="display: flex; gap: var(--space-2); margin-bottom: var(--space-4);">
+        <button class="btn btn-primary" onclick="startRecording()" style="flex: 1;">🎥 Записать</button>
+        <button class="btn btn-secondary" onclick="selectFromGallery()" style="flex: 1;">📁 Из галереи</button>
+      </div>
+
+      <input type="file" id="videoInput" accept="video/*" capture="environment" style="display: none;" onchange="handleVideoSelect(event)">
+      <input type="file" id="galleryInput" accept="video/*" style="display: none;" onchange="handleVideoSelect(event)">
+
+      <div id="videoPreview" style="display: none; text-align: center; margin-bottom: var(--space-4);">
+        <video id="previewVideo" controls style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 3px solid var(--color-primary);"></video>
+        <p style="margin-top: var(--space-3); font-size: var(--font-size-sm); color: var(--text-tertiary);">Предпросмотр кружочка</p>
+      </div>
+
+      <div class="form-group" style="margin: 0 0 var(--space-4) 0;">
+        <label>Описание (необязательно)</label>
+        <input type="text" id="videoDescription" placeholder="Например: Привет всем!">
+      </div>
+
+      <div style="display: flex; gap: var(--space-2);">
+        <button class="btn btn-secondary" onclick="closeVideoUpload()" style="flex: 1;">Отмена</button>
+        <button class="btn btn-success" id="uploadVideoBtn" onclick="uploadVideo()" style="flex: 2; display: none;">✅ Загрузить</button>
+      </div>
+
+      <div id="uploadProgress" style="display: none; margin-top: var(--space-4);">
+        <div style="height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+          <div id="progressBar" style="height: 100%; width: 0%; background: var(--color-primary); transition: width 0.3s;"></div>
+        </div>
+        <p style="text-align: center; margin-top: var(--space-2); font-size: var(--font-size-sm); color: var(--text-tertiary);">
+          Загрузка... <span id="progressText">0%</span>
+        </p>
+      </div>
     </div>
   </div>
 </div>
@@ -789,7 +886,9 @@ const CURRENT_USER = { id:123456789, username:'guest', name:'Гость', role:'
 let hasConsented = localStorage.getItem('fa_consent')==='true';
 let viewLogs = JSON.parse(localStorage.getItem('fa_logs')||'[]');
 let alerts = JSON.parse(localStorage.getItem('fa_alerts')||'[]');
+let videoCircles = JSON.parse(localStorage.getItem('fa_video_circles')||'[]');
 let currentPhoto = null, currentFilter = 'all';
+let selectedVideoFile = null;
 
 const PHOTOS_DB = {
   'photo_001':{title:'Пляж на закате',album:'Лето 2024',thumb:'https://picsum.photos/seed/p1/100'},
@@ -802,55 +901,33 @@ const PHOTOS_DB = {
   'video_002':{title:'Купание',album:'Лето 2024',thumb:'https://picsum.photos/seed/v2/100'}
 };
 
-const ANOMALY_THRESHOLDS = {
-  userPerMinute: 10,
-  userPerMinuteCritical: 30,
-  totalPerMinute: 50,
-  rapidPhotos: 5
-};
+const ANOMALY_THRESHOLDS = { userPerMinute: 10, userPerMinuteCritical: 30, totalPerMinute: 50, rapidPhotos: 5 };
 
 function checkAnomaly(photoId) {
   const now = Date.now();
   const oneMinAgo = now - 60000;
   const tenSecAgo = now - 10000;
   const userRecent = viewLogs.filter(l => l.userId === CURRENT_USER.id && l.timestamp > oneMinAgo);
-  
   if (userRecent.length > ANOMALY_THRESHOLDS.userPerMinuteCritical) {
-    createAlert('critical', '🔴 Критическая активность',
-      `@${CURRENT_USER.username} сделал ${userRecent.length} просмотров за минуту!`,
-      CURRENT_USER.id, CURRENT_USER.name);
+    createAlert('critical', '🔴 Критическая активность', `@${CURRENT_USER.username} сделал ${userRecent.length} просмотров за минуту!`, CURRENT_USER.id, CURRENT_USER.name);
   } else if (userRecent.length > ANOMALY_THRESHOLDS.userPerMinute) {
-    createAlert('warning', '🟡 Подозрительная активность',
-      `@${CURRENT_USER.username} — ${userRecent.length} просмотров за 60 сек.`,
-      CURRENT_USER.id, CURRENT_USER.name);
+    createAlert('warning', '🟡 Подозрительная активность', `@${CURRENT_USER.username} — ${userRecent.length} просмотров за 60 сек.`, CURRENT_USER.id, CURRENT_USER.name);
   }
-
   const rapidViews = userRecent.filter(l => l.timestamp > tenSecAgo);
   const uniquePhotos = new Set(rapidViews.map(l => l.photoId));
   if (uniquePhotos.size > ANOMALY_THRESHOLDS.rapidPhotos) {
-    createAlert('critical', '🔴 Быстрое переключение фото',
-      `@${CURRENT_USER.username} открыл ${uniquePhotos.size} разных фото за 10 сек!`,
-      CURRENT_USER.id, CURRENT_USER.name);
+    createAlert('critical', '🔴 Быстрое переключение фото', `@${CURRENT_USER.username} открыл ${uniquePhotos.size} разных фото за 10 сек!`, CURRENT_USER.id, CURRENT_USER.name);
   }
-
   const totalRecent = viewLogs.filter(l => l.timestamp > oneMinAgo);
   if (totalRecent.length > ANOMALY_THRESHOLDS.totalPerMinute) {
-    createAlert('warning', '🟡 Высокая нагрузка',
-      `Суммарно ${totalRecent.length} просмотров за минуту.`,
-      null, 'Система');
+    createAlert('warning', '🟡 Высокая нагрузка', `Суммарно ${totalRecent.length} просмотров за минуту.`, null, 'Система');
   }
 }
 
 function createAlert(level, title, desc, userId, userName) {
   const recent = alerts.filter(a => a.title === title && Date.now() - a.timestamp < 30000);
   if (recent.length > 0) return;
-
-  const alert = {
-    id: Date.now(),
-    level, title, desc, userId, userName,
-    timestamp: Date.now(),
-    resolved: false
-  };
+  const alert = { id: Date.now(), level, title, desc, userId, userName, timestamp: Date.now(), resolved: false };
   alerts.unshift(alert);
   if (alerts.length > 100) alerts = alerts.slice(0, 100);
   localStorage.setItem('fa_alerts', JSON.stringify(alerts));
@@ -861,12 +938,8 @@ function createAlert(level, title, desc, userId, userName) {
 function updateAlertBadge() {
   const unresolved = alerts.filter(a => !a.resolved);
   const badge = document.getElementById('alertCount');
-  if (unresolved.length > 0) {
-    badge.style.display = 'flex';
-    badge.textContent = unresolved.length > 9 ? '9+' : unresolved.length;
-  } else {
-    badge.style.display = 'none';
-  }
+  if (unresolved.length > 0) { badge.style.display = 'flex'; badge.textContent = unresolved.length > 9 ? '9+' : unresolved.length; }
+  else { badge.style.display = 'none'; }
 }
 
 function renderAlerts() {
@@ -875,107 +948,39 @@ function renderAlerts() {
   const warnings = alerts.filter(a => a.level === 'warning' && !a.resolved).length;
   document.getElementById('criticalCount').textContent = critical;
   document.getElementById('warningCount').textContent = warnings;
-
-  list.innerHTML = alerts.length === 0
-    ? '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-8);font-size:var(--font-size-sm);">✅ Всё спокойно. Аномалий не обнаружено.</p>'
-    : alerts.slice(0, 20).map(a => `
-      <div class="alert-item ${a.level} ${a.resolved ? 'resolved' : ''}">
-        <div class="alert-icon">${a.level === 'critical' ? '🔴' : '🟡'}</div>
-        <div class="alert-body">
-          <div class="alert-title">${a.title}</div>
-          <div class="alert-desc">${a.desc}</div>
-          <div class="alert-time">${getTimeAgo(a.timestamp)}${a.resolved ? ' • ✅ Решено' : ''}</div>
-          ${!a.resolved ? `<div class="alert-actions">
-            <button class="btn-success" onclick="resolveAlert(${a.id})">✅ Решено</button>
-            ${a.userId ? `<button class="btn-danger" onclick="blockUser(${a.userId})">🚫 Блок</button>` : ''}
-          </div>` : ''}
-        </div>
-      </div>
-    `).join('');
+  list.innerHTML = alerts.length === 0 ? '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-8);font-size:var(--font-size-sm);">✅ Всё спокойно. Аномалий не обнаружено.</p>' : alerts.slice(0, 20).map(a => `<div class="alert-item ${a.level} ${a.resolved ? 'resolved' : ''}"><div class="alert-icon">${a.level === 'critical' ? '🔴' : '🟡'}</div><div class="alert-body"><div class="alert-title">${a.title}</div><div class="alert-desc">${a.desc}</div><div class="alert-time">${getTimeAgo(a.timestamp)}${a.resolved ? ' • ✅ Решено' : ''}</div>${!a.resolved ? `<div class="alert-actions"><button class="btn-success" onclick="resolveAlert(${a.id})">✅ Решено</button>${a.userId ? `<button class="btn-danger" onclick="blockUser(${a.userId})">🚫 Блок</button>` : ''}</div>` : ''}</div></div>`).join('');
 }
 
-function resolveAlert(id) {
-  const a = alerts.find(x => x.id === id);
-  if (a) { a.resolved = true; localStorage.setItem('fa_alerts', JSON.stringify(alerts)); renderAlerts(); updateAlertBadge(); }
-}
-function blockUser(userId) {
-  alert(`Пользователь ${userId} заблокирован (демо)`);
-}
-function clearAlerts() {
-  if (confirm('Очистить все алерты?')) {
-    alerts = []; localStorage.removeItem('fa_alerts'); renderAlerts(); updateAlertBadge();
-  }
-}
+function resolveAlert(id) { const a = alerts.find(x => x.id === id); if (a) { a.resolved = true; localStorage.setItem('fa_alerts', JSON.stringify(alerts)); renderAlerts(); updateAlertBadge(); } }
+function blockUser(userId) { alert(`Пользователь ${userId} заблокирован (демо)`); }
+function clearAlerts() { if (confirm('Очистить все алерты?')) { alerts = []; localStorage.removeItem('fa_alerts'); renderAlerts(); updateAlertBadge(); } }
 
 function renderStats() {
   document.getElementById('statTotalViews').textContent = viewLogs.length;
   const users = new Set(viewLogs.map(l => l.userId));
   document.getElementById('statTotalUsers').textContent = users.size;
-
   const userStats = {};
-  viewLogs.forEach(l => {
-    if (!userStats[l.userId]) userStats[l.userId] = { name: l.userName, username: l.userUsername, views: 0, role: l.userRole };
-    userStats[l.userId].views++;
-  });
+  viewLogs.forEach(l => { if (!userStats[l.userId]) userStats[l.userId] = { name: l.userName, username: l.userUsername, views: 0, role: l.userRole }; userStats[l.userId].views++; });
   const topUsers = Object.values(userStats).sort((a, b) => b.views - a.views).slice(0, 5);
   const maxViews = topUsers[0]?.views || 1;
-
-  document.getElementById('topUsersList').innerHTML = topUsers.length === 0
-    ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>'
-    : topUsers.map((u, i) => {
-      const rank = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-      const pct = Math.round(u.views / maxViews * 100);
-      const roleBadge = u.role === 'vip' ? ' ' : '';
-      return `<div class="stat-user-item">
-        <div class="stat-rank ${rank}">${i + 1}</div>
-        <div class="stat-user-avatar">${u.name[0]}</div>
-        <div class="stat-user-info"><div class="name">${u.name}${roleBadge}</div><div class="detail">@${u.username}</div></div>
-        <div class="stat-bar-container"><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><div class="stat-bar-label">${u.views} 👁️</div></div>
-      </div>`;
-    }).join('');
-
+  document.getElementById('topUsersList').innerHTML = topUsers.length === 0 ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>' : topUsers.map((u, i) => { const rank = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''; const pct = Math.round(u.views / maxViews * 100); const roleBadge = u.role === 'vip' ? ' 👑' : ''; return `<div class="stat-user-item"><div class="stat-rank ${rank}">${i + 1}</div><div class="stat-user-avatar">${u.name[0]}</div><div class="stat-user-info"><div class="name">${u.name}${roleBadge}</div><div class="detail">@${u.username}</div></div><div class="stat-bar-container"><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><div class="stat-bar-label">${u.views} 👁️</div></div></div>`; }).join('');
   const albumStats = {};
-  viewLogs.forEach(l => {
-    if (!albumStats[l.albumName]) albumStats[l.albumName] = { views: 0, users: new Set() };
-    albumStats[l.albumName].views++;
-    albumStats[l.albumName].users.add(l.userId);
-  });
+  viewLogs.forEach(l => { if (!albumStats[l.albumName]) albumStats[l.albumName] = { views: 0, users: new Set() }; albumStats[l.albumName].views++; albumStats[l.albumName].users.add(l.userId); });
   const topAlbums = Object.entries(albumStats).sort((a, b) => b[1].views - a[1].views).slice(0, 5);
   const seeds = ['summer','newyear','birthday','grad','trip','wedding'];
-
-  document.getElementById('topAlbumsList').innerHTML = topAlbums.length === 0
-    ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>'
-    : topAlbums.map(([name, data], i) => `<div class="stat-album-item">
-      <div class="stat-album-thumb" style="background-image:url('https://picsum.photos/seed/${seeds[i] || 'x'}/100')"></div>
-      <div class="stat-album-info"><div class="name">${name}</div><div class="detail">${data.users.size} участников</div></div>
-      <div class="stat-album-views">${data.views} 👁️</div>
-    </div>`).join('');
-
+  document.getElementById('topAlbumsList').innerHTML = topAlbums.length === 0 ? '<p style="color:var(--text-tertiary);font-size:var(--font-size-sm);text-align:center;padding:var(--space-4);">Нет данных</p>' : topAlbums.map(([name, data], i) => `<div class="stat-album-item"><div class="stat-album-thumb" style="background-image:url('https://picsum.photos/seed/${seeds[i] || 'x'}/100')"></div><div class="stat-album-info"><div class="name">${name}</div><div class="detail">${data.users.size} участников</div></div><div class="stat-album-views">${data.views} 👁️</div></div>`).join('');
   const days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   const now = Date.now();
   const dayMs = 86400000;
-  const weekData = days.map((_, i) => {
-    const dayStart = now - (6 - i) * dayMs;
-    const dayEnd = dayStart + dayMs;
-    return viewLogs.filter(l => l.timestamp >= dayStart && l.timestamp < dayEnd).length;
-  });
+  const weekData = days.map((_, i) => { const dayStart = now - (6 - i) * dayMs; const dayEnd = dayStart + dayMs; return viewLogs.filter(l => l.timestamp >= dayStart && l.timestamp < dayEnd).length; });
   const maxDay = Math.max(...weekData, 1);
-
-  document.getElementById('weeklyChart').innerHTML = days.map((d, i) => {
-    const h = Math.max(4, (weekData[i] / maxDay) * 80);
-    return `<div class="bar-col"><div class="bar-value">${weekData[i]}</div><div class="bar" style="height:${h}px"></div><div class="bar-label">${d}</div></div>`;
-  }).join('');
+  document.getElementById('weeklyChart').innerHTML = days.map((d, i) => { const h = Math.max(4, (weekData[i] / maxDay) * 80); return `<div class="bar-col"><div class="bar-value">${weekData[i]}</div><div class="bar" style="height:${h}px"></div><div class="bar-label">${d}</div></div>`; }).join('');
 }
 
 function logView(photoId) {
   const photo = PHOTOS_DB[photoId];
   if (!photo) return;
-  viewLogs.unshift({
-    photoId, photoTitle: photo.title, albumId: 'summer', albumName: photo.album,
-    thumb: photo.thumb, userId: CURRENT_USER.id, userName: CURRENT_USER.name,
-    userUsername: CURRENT_USER.username, userRole: CURRENT_USER.role,
-    timestamp: Date.now(), quality: CURRENT_USER.role === 'vip' ? 'original' : 'hd'
-  });
+  viewLogs.unshift({ photoId, photoTitle: photo.title, albumId: 'summer', albumName: photo.album, thumb: photo.thumb, userId: CURRENT_USER.id, userName: CURRENT_USER.name, userUsername: CURRENT_USER.username, userRole: CURRENT_USER.role, timestamp: Date.now(), quality: CURRENT_USER.role === 'vip' ? 'original' : 'hd' });
   if (viewLogs.length > 500) viewLogs = viewLogs.slice(0, 500);
   localStorage.setItem('fa_logs', JSON.stringify(viewLogs));
   checkAnomaly(photoId);
@@ -1001,6 +1006,7 @@ function renderProtectedImage(canvas, url, quality) {
   img.onerror = () => { canvas.width=400; canvas.height=300; ctx.fillStyle='#1c1c1e'; ctx.fillRect(0,0,400,300); ctx.fillStyle='#fff'; ctx.font='16px sans-serif'; ctx.textAlign='center'; ctx.fillText('🔒 Защищено',200,150); };
   img.src = url;
 }
+
 function addWatermark(ctx, w, h) {
   ctx.save();
   const t = `@${CURRENT_USER.username} • ${CURRENT_USER.id}`;
@@ -1039,12 +1045,10 @@ function renderLogs() {
   const ac=document.getElementById('adminViewsCount'); if(ac) ac.textContent=viewLogs.length;
   const pc={}; viewLogs.forEach(l=>{if(!pc[l.photoId])pc[l.photoId]={c:0,t:l.photoTitle,th:l.thumb,a:l.albumName};pc[l.photoId].c++;});
   const top=Object.entries(pc).sort((a,b)=>b[1].c-a[1].c).slice(0,3);
-  document.getElementById('topPhotosList').innerHTML=top.map(([id,d],i)=>{
-    const r=i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    return `<div class="top-photo-item"><div class="top-photo-rank ${r}">${i+1}</div><div class="top-photo-thumb" style="background-image:url('${d.th}')"></div><div class="top-photo-info"><div class="name">${d.t}</div><div class="album">${d.a}</div></div><div class="top-photo-views">${d.c}👁️</div></div>`;
-  }).join('')||'<p style="color:var(--text-tertiary);text-align:center;padding:var(--space-4);font-size:var(--font-size-sm);">Нет данных</p>';
-  document.getElementById('logsList').innerHTML=f.slice(0,20).map(l=>`<div class="log-item"><div class="log-photo" style="background-image:url('${l.thumb}')"></div><div class="log-info"><div class="title">${l.photoTitle}</div><div class="meta"><span class="user"> ${l.userName}</span><span>${l.quality==='original'?'👑':'📺'}</span></div></div><div class="log-time">${getTimeAgo(l.timestamp)}</div></div>`).join('')||'<p style="text-align:center;padding:var(--space-8);color:var(--text-tertiary);">Пусто</p>';
+  document.getElementById('topPhotosList').innerHTML=top.map(([id,d],i)=>{ const r=i===0?'gold':i===1?'silver':i===2?'bronze':''; return `<div class="top-photo-item"><div class="top-photo-rank ${r}">${i+1}</div><div class="top-photo-thumb" style="background-image:url('${d.th}')"></div><div class="top-photo-info"><div class="name">${d.t}</div><div class="album">${d.a}</div></div><div class="top-photo-views">${d.c}👁️</div></div>`; }).join('')||'<p style="color:var(--text-tertiary);text-align:center;padding:var(--space-4);font-size:var(--font-size-sm);">Нет данных</p>';
+  document.getElementById('logsList').innerHTML=f.slice(0,20).map(l=>`<div class="log-item"><div class="log-photo" style="background-image:url('${l.thumb}')"></div><div class="log-info"><div class="title">${l.photoTitle}</div><div class="meta"><span class="user">👤 ${l.userName}</span><span>${l.quality==='original'?'👑':'📺'}</span></div></div><div class="log-time">${getTimeAgo(l.timestamp)}</div></div>`).join('')||'<p style="text-align:center;padding:var(--space-8);color:var(--text-tertiary);">Пусто</p>';
 }
+
 function filterLogs(f,el){currentFilter=f;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderLogs();}
 function getTimeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'только что';if(s<3600)return Math.floor(s/60)+' мин';if(s<86400)return Math.floor(s/3600)+' ч';return Math.floor(s/86400)+' дн';}
 
@@ -1059,6 +1063,7 @@ function showScreen(id) {
   if(id==='logs')renderLogs();
   if(id==='alerts')renderAlerts();
   if(id==='stats')renderStats();
+  if(id==='album')renderVideoCircles();
   if(id==='loading'){const b=document.querySelector('.loading-progress-bar');b.style.animation='none';setTimeout(()=>b.style.animation='',10);}
 }
 
@@ -1068,6 +1073,108 @@ function selectAmount(el,a){document.querySelectorAll('.amount-btn').forEach(b=>
 document.getElementById('donateModal').addEventListener('click',e=>{if(e.target.id==='donateModal')closeDonate();});
 
 function toggleTheme(){document.documentElement.classList.toggle('dark-mode');}
+
+// Видео-кружочки функции
+function openVideoUpload() {
+  document.getElementById('videoUploadModal').classList.add('active');
+  resetVideoUpload();
+}
+
+function closeVideoUpload() {
+  document.getElementById('videoUploadModal').classList.remove('active');
+  resetVideoUpload();
+}
+
+function resetVideoUpload() {
+  selectedVideoFile = null;
+  document.getElementById('videoPreview').style.display = 'none';
+  document.getElementById('uploadVideoBtn').style.display = 'none';
+  document.getElementById('uploadProgress').style.display = 'none';
+  document.getElementById('videoDescription').value = '';
+  document.getElementById('videoInput').value = '';
+  document.getElementById('galleryInput').value = '';
+}
+
+function startRecording() {
+  document.getElementById('videoInput').click();
+}
+
+function selectFromGallery() {
+  document.getElementById('galleryInput').click();
+}
+
+function handleVideoSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 50 * 1024 * 1024) { alert('Файл слишком большой! Максимум 50 МБ.'); return; }
+  if (!file.type.startsWith('video/')) { alert('Пожалуйста, выберите видеофайл.'); return; }
+  selectedVideoFile = file;
+  const videoURL = URL.createObjectURL(file);
+  const previewVideo = document.getElementById('previewVideo');
+  previewVideo.src = videoURL;
+  document.getElementById('videoPreview').style.display = 'block';
+  document.getElementById('uploadVideoBtn').style.display = 'block';
+  previewVideo.play().catch(() => {});
+}
+
+function uploadVideo() {
+  if (!selectedVideoFile) return;
+  const description = document.getElementById('videoDescription').value;
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const uploadProgress = document.getElementById('uploadProgress');
+  uploadProgress.style.display = 'block';
+  document.getElementById('uploadVideoBtn').disabled = true;
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += 10;
+    progressBar.style.width = progress + '%';
+    progressText.textContent = progress + '%';
+    if (progress >= 100) {
+      clearInterval(interval);
+      const videoData = {
+        id: 'video_' + Date.now(),
+        description: description,
+        timestamp: Date.now(),
+        userId: CURRENT_USER.id,
+        userName: CURRENT_USER.name,
+        albumId: 'summer',
+        albumName: 'Лето 2024',
+        fileName: selectedVideoFile.name
+      };
+      videoCircles.unshift(videoData);
+      localStorage.setItem('fa_video_circles', JSON.stringify(videoCircles));
+      setTimeout(() => {
+        closeVideoUpload();
+        showToast('✅ Кружочек загружен!');
+        renderVideoCircles();
+      }, 500);
+    }
+  }, 200);
+}
+
+function renderVideoCircles() {
+  const container = document.getElementById('videoCirclesContainer');
+  if (!container) return;
+  if (videoCircles.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: var(--space-4); grid-column: 1/-1;">Пока нет кружочков</p>';
+    return;
+  }
+  container.innerHTML = videoCircles.map(video => `
+    <div style="text-align: center;">
+      <div class="video-circle" style="background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; font-size: 32px;" onclick="playVideoCircle('${video.id}')">
+        📹
+      </div>
+      <p style="font-size: var(--font-size-xs); color: var(--text-tertiary); margin-top: 4px;">${video.userName}</p>
+    </div>
+  `).join('');
+}
+
+function playVideoCircle(videoId) {
+  const video = videoCircles.find(v => v.id === videoId);
+  if (!video) return;
+  alert(`В демо-версии видео хранится локально. В реальной версии здесь будет воспроизведение видео: ${video.fileName || 'video.mp4'}`);
+}
 
 function initProtection(){
   document.addEventListener('contextmenu',e=>{e.preventDefault();showToast('🔒 Запрещено');});
